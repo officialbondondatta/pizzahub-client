@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="520" height="140" viewBox="0 0 520 140">
+<g id="PizzaHub-logo-1">
+<g transform="translate(30 29) scale(1.9)">
+<rect x="0" y="0" width="42" height="42" rx="12" fill="#C93624"/>
+<path d="M10 12Q21 6 33 12L22 34Z" fill="#FFF8EE"/><path d="M10 12Q21 6 33 12" stroke="#E8AA3D" stroke-width="5" stroke-linecap="round"/>
+<circle cx="19" cy="17" r="2.8" fill="#C93624"/>
+<circle cx="25" cy="22" r="2.6" fill="#C93624"/>
+<text x="53" y="30" font-family="Georgia" font-size="30" font-weight="700" fill="#28231F" text-anchor="start">PizzaHub</text>
+</g>
+</g>
+</svg>
