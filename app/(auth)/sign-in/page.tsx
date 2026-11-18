@@ -38,7 +38,8 @@ export default function SignInPage() {
                     fill
                     sizes="(max-width: 1023px) 100vw, 42vw"
                     className="-z-20 object-cover object-[center_25%]"
-                    preload
+                    loading="lazy"
+                    fetchPriority="high"
                 />
                 <div
                     aria-hidden="true"
@@ -48,7 +49,7 @@ export default function SignInPage() {
                     href="/"
                     className="flex w-fit items-center gap-2.5 font-serif text-3xl font-bold"
                 >
-                    <Image src={logo} alt="" width={36} height={36} />
+                    <Image src={logo} alt="" width={520} height={140} style={{ width: 36, height: "auto" }} />
                     PizzaHub
                 </Link>
                 <div className="mt-auto pt-48 sm:pt-56">

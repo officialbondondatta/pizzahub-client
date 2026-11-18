@@ -142,6 +142,7 @@ const Navbar = () => {
                             width={160}
                             height={43}
                             className="block h-auto max-h-11 w-full object-contain"
+                            style={{ height: "auto" }}
                             loading="eager"
                         />
                     </Link>

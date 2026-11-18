@@ -60,14 +60,14 @@ export default function SignUpPage() {
 
     return (
         <div className="grid min-h-svh bg-[#fff8ef] text-[#2b2521] lg:grid-cols-[42%_58%]">
-            <aside className="relative isolate flex min-h-[580px] flex-col overflow-hidden bg-[#27231f] px-7 py-8 text-[#fff8ef] sm:min-h-[640px] sm:px-12 lg:min-h-svh lg:py-10">
+            <aside className="relative isolate flex min-h-145 flex-col overflow-hidden bg-[#27231f] px-7 py-8 text-[#fff8ef] sm:min-h-160 sm:px-12 lg:min-h-svh lg:py-10">
                 <Image
                     src={pizzaImage}
                     alt="A Bangladeshi woman in a burgundy party dress enjoying pizza"
                     fill
                     sizes="(max-width: 1023px) 100vw, 42vw"
                     className="-z-20 object-cover object-[center_25%]"
-                    preload
+                    loading="eager"
                 />
                 <div
                     aria-hidden="true"
@@ -77,7 +77,7 @@ export default function SignUpPage() {
                     href="/"
                     className="flex w-fit items-center gap-2.5 font-serif text-3xl font-bold"
                 >
-                    <Image src={logo} alt="" width={36} height={36} />
+                    <Image src={logo} alt="" width={520} height={140} style={{ width: 36, height: "auto" }} />
                     PizzaHub
                 </Link>
                 <div className="mt-auto pt-48 sm:pt-56">
