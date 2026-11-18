@@ -13,6 +13,7 @@ import logo from "@/app/assets/pizzahublogo.svg"
 import { authClient } from "@/app/lib/auth-client";
 import { toast } from "@/components/ui/toast";
 import { useRouter } from "next/navigation";
+import type { IUser } from "@/app/Types/user"
 
 const roles = [
     {
@@ -27,12 +28,12 @@ const roles = [
         description: "Share your menu",
         icon: ShoppingBag,
     },
-]
+] as const
 const inputClass =
     "h-11 border-[#e6dbcf] bg-white placeholder:text-[#8b7e73] dark:bg-white"
 
 export default function SignUpPage() {
-    const [role, setRole] = useState("customer")
+    const [role, setRole] = useState<Exclude<IUser["role"], "admin">>("customer")
     const [showPassword, setShowPassword] = useState(false)
     const router = useRouter()
     async function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -40,11 +41,18 @@ export default function SignUpPage() {
         const form = event.currentTarget
         const formData = new FormData(form)
 
-        const { data, error } = await authClient.signUp.email({
+        const signUpData: Omit<IUser, "_id" | "role"> & {
+            role: Exclude<IUser["role"], "admin">
+        } = {
             name: formData.get("name") as string,
             email: formData.get("email") as string,
             password: formData.get("password") as string,
             role: role === "vendor" ? "vendor" : "customer",
+            image: String(formData.get("image") ?? "").trim(),
+        }
+
+        const { data, error } = await authClient.signUp.email({
+            ...signUpData,
             callbackURL: `${process.env.NEXT_PUBLIC_BETTER_AUTH_URL}`,
         });
         if (data?.token) {
@@ -171,6 +179,21 @@ export default function SignUpPage() {
                                 required
                                 className={inputClass}
                             />
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="image">Profile image URL (optional)</Label>
+                            <Input
+                                id="image"
+                                name="image"
+                                type="url"
+                                pattern="https?://.*"
+                                placeholder="https://example.com/your-photo.jpg"
+                                aria-describedby="image-hint"
+                                className={inputClass}
+                            />
+                            <p id="image-hint" className="text-[11px] text-[#7d7268]">
+                                Paste a public image link, or leave this blank to add a photo later.
+                            </p>
                         </div>
                         <div className="space-y-2">
                             <Label htmlFor="password">Password</Label>
