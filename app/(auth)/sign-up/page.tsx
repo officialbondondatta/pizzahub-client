@@ -10,6 +10,8 @@ import { Label } from "@/components/ui/label"
 import pizzaImage from "@/app/assets/signup-pizza.png"
 import logo from "@/app/assets/pizzahublogo.svg"
 import { authClient } from "@/app/lib/auth-client";
+import { toast } from "@/components/ui/toast";
+import { useRouter } from "next/navigation";
 
 const roles = [
     {
@@ -31,10 +33,12 @@ const inputClass =
 export default function SignUpPage() {
     const [role, setRole] = useState("customer")
     const [showPassword, setShowPassword] = useState(false)
+    const router = useRouter()
 
     async function handleSubmit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault()
-        const formData = new FormData(event.currentTarget)
+        const form = event.currentTarget
+        const formData = new FormData(form)
         // Replace with your signup implementation. Keep passwords out of logs.
         const { data, error } = await authClient.signUp.email({
             name: formData.get("name") as string,
@@ -43,11 +47,15 @@ export default function SignUpPage() {
             role: role === "vendor" ? "vendor" : "customer",
             callbackURL: `${process.env.NEXT_PUBLIC_BETTER_AUTH_URL}`,
         });
-        console.log("Signup submitted", {
-            name: formData.get("name"),
-            email: formData.get("email"),
-            role,
-        })
+        if (data?.token) {
+            router.push("/")
+            form.reset()
+        }
+        toast.add({
+            title: error ? "Sign-up failed" : "Sign-up successful",
+            description: error ? error.message : "Please check your email for verification.",
+            type: error ? "error" : "success",
+        });
     }
 
     return (
