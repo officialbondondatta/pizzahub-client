@@ -19,6 +19,30 @@ const inputClass =
 export default function SignInPage() {
     const [showPassword, setShowPassword] = useState(false)
     const router = useRouter()
+    const handleGoogleSignIn = async () => {
+        try {
+            const { error } = await authClient.signIn.social({
+                provider: "google",
+                callbackURL: `${process.env.NEXT_PUBLIC_BETTER_AUTH_URL}`,
+            });
+            if (error) {
+                toast.add({
+                    title: "Google sign-in failed",
+                    description: error.message,
+                    type: "error",
+                });
+            }
+        } catch (error) {
+            toast.add({
+                title: "Google sign-in failed",
+                description:
+                    error instanceof Error
+                        ? error.message
+                        : "An unexpected error occurred. Please try again.",
+                type: "error",
+            });
+        }
+    };
     async function handleSubmit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault()
         const form = event.currentTarget
@@ -100,7 +124,7 @@ export default function SignInPage() {
                         <Button
                             type="button"
                             variant="outline"
-                            onClick={() => console.log("Google sign-in clicked")}
+                            onClick={handleGoogleSignIn}
                             className="h-11 w-full border-[#e6dbcf] bg-white text-[#2b2521] hover:bg-[#f9eee2] dark:border-[#e6dbcf] dark:bg-white dark:hover:bg-[#f9eee2]"
                         >
                             Continue with Google
