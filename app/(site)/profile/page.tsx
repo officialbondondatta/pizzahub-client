@@ -15,6 +15,7 @@ import { authClient, useSession } from "@/app/lib/auth-client"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { toast } from "@/components/ui/toast";
 
 function ProfileBackdrop({ children }: { children: ReactNode }) {
   return (
@@ -25,7 +26,7 @@ function ProfileBackdrop({ children }: { children: ReactNode }) {
       />
       <div
         aria-hidden="true"
-        className="absolute inset-0 -z-10 bg-gradient-to-b from-brand-950/55 via-brand-950/35 to-brand-950/80"
+        className="absolute inset-0 -z-10 bg-linear-to-b from-brand-950/55 via-brand-950/35 to-brand-950/80"
       />
       {children}
     </div>
@@ -80,6 +81,10 @@ function ProfileForm({
           "Unable to save your profile. Please try again."
         )
       } else {
+        toast.add({
+          title: "Profile updated",
+          description: "Your profile has been updated successfully.",
+        });
         setMessage("Your profile has been updated.")
       }
     } catch {
@@ -96,7 +101,7 @@ function ProfileForm({
       className="overflow-hidden rounded-3xl border border-white/40 bg-background/95 shadow-2xl backdrop-blur-xl"
       aria-label="Profile details"
     >
-      <div className="flex items-center gap-5 border-b border-border/60 bg-gradient-to-r from-primary/20 to-transparent px-6 py-7 sm:px-9">
+      <div className="flex items-center gap-5 border-b border-border/60 bg-linear-to-r from-primary/20 to-transparent px-6 py-7 sm:px-9">
         <div className="flex size-20 shrink-0 items-center justify-center overflow-hidden rounded-2xl border-4 border-background bg-primary/25 text-brand-700 shadow-md dark:text-brand-200">
           {showImage ? (
             // Hosted avatar URLs can come from any provider; load directly without an image proxy.
@@ -204,7 +209,7 @@ function ProfileForm({
             </p>
             {failedImage === imageUrl && imageUrl && (
               <p className="text-xs text-destructive" role="status">
-                We couldn’t load this image. Check that the link is public and
+                We couldn&apos;t load this image. Check that the link is public and
                 points directly to an image.
               </p>
             )}
