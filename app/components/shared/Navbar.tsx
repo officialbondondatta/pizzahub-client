@@ -1,6 +1,5 @@
 "use client"
 
-import Image from "next/image"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { ChevronDown, LayoutDashboard, LogOut, Menu, Moon, Sun, UserRound, X } from "lucide-react"
@@ -25,7 +24,7 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import pizzahublogo from "../../assets/pizzahublogo.svg"
+import BrandLogo from "./BrandLogo"
 import { authClient, useSession } from "@/app/lib/auth-client";
 import { toast } from "@/components/ui/toast";
 
@@ -192,17 +191,9 @@ const Navbar = () => {
                         href="/"
                         aria-label="PizzaHub home"
                         onClick={() => setIsOpen(false)}
-                        className={`${focusStyles} block w-36 max-w-full min-w-0 shrink rounded-sm  bg-orange-100 sm:w-40 lg:justify-self-start`}
+                        className={`${focusStyles} inline-flex shrink-0 rounded-sm lg:justify-self-start`}
                     >
-                        <Image
-                            src={pizzahublogo}
-                            alt="PizzaHub"
-                            width={160}
-                            height={43}
-                            className="block h-auto max-h-11 w-full object-contain"
-                            style={{ height: "auto" }}
-                            loading="eager"
-                        />
+                        <BrandLogo />
                     </Link>
 
                     <NavigationMenu

@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import pizzaImage from "@/app/assets/signup-pizza.png"
-import logo from "@/app/assets/pizzahublogo.svg"
+import BrandLogo from "@/app/components/shared/BrandLogo"
 import { authClient } from "@/app/lib/auth-client";
 import { toast } from "@/components/ui/toast";
 import { useRouter } from "next/navigation";
@@ -85,8 +85,7 @@ export default function SignUpPage() {
                     href="/"
                     className="flex w-fit items-center gap-2.5 font-serif text-3xl font-bold"
                 >
-                    <Image src={logo} alt="" width={520} height={140} style={{ width: 36, height: "auto" }} />
-                    PizzaHub
+                    <BrandLogo inverse />
                 </Link>
                 <div className="mt-auto pt-48 sm:pt-56">
                     <span className="rounded-full bg-[#fff0c9] px-3 py-1 text-[10px] font-semibold tracking-wide text-[#80520d]">

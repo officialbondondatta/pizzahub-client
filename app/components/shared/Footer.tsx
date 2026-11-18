@@ -1,7 +1,6 @@
-import Image from "next/image"
 import Link from "next/link"
 import { ArrowUpRight, Mail, Pizza } from "lucide-react"
-import logo from "@/app/assets/pizzahublogo.svg"
+import BrandLogo from "./BrandLogo"
 
 type SocialIconProps = { className?: string }
 
@@ -121,15 +120,9 @@ export default function Footer() {
                         <Link
                             href="/"
                             aria-label="PizzaHub home"
-                            className={`${focus} inline-flex rounded-xl bg-brand-100 px-3 py-2`}
+                            className={`${focus} inline-flex rounded-sm`}
                         >
-                            <Image
-                                src={logo}
-                                alt="PizzaHub"
-                                width={168}
-                                height={45}
-                                className="h-auto w-42"
-                            />
+                            <BrandLogo inverse />
                         </Link>
                         <p className="mt-5 max-w-xs text-sm leading-7 text-brand-100/75">
                             Your neighborhood of great kitchens, pizza lovers, and moments
