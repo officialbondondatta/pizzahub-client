@@ -9,29 +9,43 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import pizzaImage from "@/app/assets/signin-family.png"
 import logo from "@/app/assets/pizzahublogo.svg"
+import { authClient } from "@/app/lib/auth-client";
+import { toast } from "@/components/ui/toast";
+import { useRouter } from "next/navigation";
 
 const inputClass =
     "h-11 border-[#e6dbcf] bg-white placeholder:text-[#8b7e73] dark:bg-white"
 
 export default function SignInPage() {
     const [showPassword, setShowPassword] = useState(false)
-
-    function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    const router = useRouter()
+    async function handleSubmit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault()
-        const data = new FormData(event.currentTarget)
-        const signInData = Object.fromEntries(data.entries())
+        const form = event.currentTarget
+        const formData = new FormData(form)
+        const signInData = Object.fromEntries(formData.entries())
         const email = (signInData.email as string).trim()
         const password = (signInData.password as string)
-        // Replace with your sign-in implementation. Keep passwords out of logs.
-        console.log("Sign-in submitted", {
+        const { data, error } = await authClient.signIn.email({
             email,
             password,
-        })
+            callbackURL: `${process.env.NEXT_PUBLIC_BETTER_AUTH_URL}`,
+        });
+        if (data?.token) {
+            router.push("/")
+            form.reset()
+        }
+        toast.add({
+            title: error ? "Sign-in failed" : "Sign-in successful",
+            description: error ? error.message : "You have successfully signed in.",
+            type: error ? "error" : "success",
+        });
+
     }
 
     return (
         <div className="grid min-h-svh bg-[#fff8ef] text-[#2b2521] lg:grid-cols-[42%_58%]">
-            <aside className="relative isolate flex min-h-[580px] flex-col overflow-hidden bg-[#27231f] px-7 py-8 text-[#fff8ef] sm:min-h-[640px] sm:px-12 lg:min-h-svh lg:py-10">
+            <aside className="relative isolate flex min-h-145 flex-col overflow-hidden bg-[#27231f] px-7 py-8 text-[#fff8ef] sm:min-h-160 sm:px-12 lg:min-h-svh lg:py-10">
                 <Image
                     src={pizzaImage}
                     alt="A Bangladeshi family sharing pizza at a restaurant"
