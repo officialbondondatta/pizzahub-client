@@ -48,7 +48,7 @@ const Navbar = () => {
 
     const navigation = [
         { label: "Home", href: "/" },
-        { label: "Browse menu", href: "/menu" },
+        { label: "Browse menu", href: "/browse-menu" },
         ...(user ? [{ label: "Dashboard", href: dashboardHref }] : [])
     ]
 
