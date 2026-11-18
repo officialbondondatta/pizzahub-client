@@ -30,7 +30,7 @@ export default function SignInPage() {
         const { data, error } = await authClient.signIn.email({
             email,
             password,
-            callbackURL: `${process.env.NEXT_PUBLIC_BETTER_AUTH_URL}`,
+            callbackURL: "/",
         });
         if (data?.token) {
             router.push("/")

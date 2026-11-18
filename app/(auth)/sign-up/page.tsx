@@ -53,7 +53,7 @@ export default function SignUpPage() {
 
         const { data, error } = await authClient.signUp.email({
             ...signUpData,
-            callbackURL: `${process.env.NEXT_PUBLIC_BETTER_AUTH_URL}`,
+            callbackURL: "/",
         });
         if (data?.token) {
             router.push("/")
