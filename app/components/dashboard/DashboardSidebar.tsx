@@ -1,8 +1,21 @@
+import {
+    Sidebar,
+    SidebarContent,
+    SidebarFooter,
+    SidebarGroup,
+    SidebarHeader,
+} from "@/components/ui/sidebar"
+
 const DashboardSidebar = () => {
     return (
-        <div>
-            <h3>Dashboard</h3>
-        </div>
+        <Sidebar>
+            <SidebarHeader />
+            <SidebarContent>
+                <SidebarGroup />
+                <SidebarGroup />
+            </SidebarContent>
+            <SidebarFooter />
+        </Sidebar>
     );
 };
 

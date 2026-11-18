@@ -1,12 +1,16 @@
 import React from 'react';
 import DashboardSidebar from '../components/dashboard/DashboardSidebar';
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
 
 const layout = ({ children }: { children: React.ReactNode }) => {
     return (
-        <main>
+        <SidebarProvider>
             <DashboardSidebar></DashboardSidebar>
-            {children}
-        </main>
+            <main>
+                <SidebarTrigger />
+                {children}
+            </main>
+        </SidebarProvider>
     );
 };
 
