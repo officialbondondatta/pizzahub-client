@@ -3,7 +3,7 @@
 import Image from "next/image"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Menu, Moon, Sun, X } from "lucide-react"
+import { ChevronDown, LayoutDashboard, LogOut, Menu, Moon, Sun, UserRound, X } from "lucide-react"
 import { useEffect, useRef, useState } from "react"
 import { useTheme } from "next-themes"
 import { Button } from "@/components/ui/button"
@@ -18,6 +18,13 @@ import {
     NavigationMenuItem,
     NavigationMenuLink,
 } from "@/components/ui/navigation-menu"
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 import pizzahublogo from "../../assets/pizzahublogo.svg"
 import { authClient, useSession } from "@/app/lib/auth-client";
 import { toast } from "@/components/ui/toast";
@@ -34,11 +41,15 @@ const Navbar = () => {
     const toggleRef = useRef<HTMLButtonElement>(null)
     const { data: session } = useSession()
     const user = session?.user
+    const role: string | null | undefined = user?.role
+    const dashboardRole = role === "admin" || role === "vendor" ? role : "customer"
+    const dashboardHref = `/dashboard/${dashboardRole}`
+    const initials = user?.name?.trim().split(/\s+/).slice(0, 2).map((part) => part[0]).join("").toUpperCase() || "U"
 
     const navigation = [
         { label: "Home", href: "/" },
         { label: "Browse menu", href: "/menu" },
-        ...(user ? [{ label: "Dashboard", href: `/dashboard/${user?.role}` }] : [])
+        ...(user ? [{ label: "Dashboard", href: dashboardHref }] : [])
     ]
 
     const handleSignOut = async () => {
@@ -123,15 +134,36 @@ const Navbar = () => {
         </>
     )
     const afterLoginRenderAuth = () => (
-        <>
-            <Button
-                variant="outline"
-                onClick={handleSignOut}
-                className={`${focusStyles} h-11 rounded-sm border border-border px-5 py-2.5 text-center text-sm font-semibold text-foreground transition-colors hover:border-primary hover:bg-accent motion-reduce:transition-none`}
+        <DropdownMenu>
+            <DropdownMenuTrigger
+                render={<Button variant="outline" />}
+                aria-label="Open profile menu"
+                className="h-11 gap-2 rounded-xl px-2 lg:px-3"
             >
-                Sign Out
-            </Button>
-        </>
+                <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary text-xs font-semibold text-primary-foreground">
+                    {initials}
+                </span>
+                <span className="hidden max-w-28 truncate lg:block">{user?.name || "My account"}</span>
+                <ChevronDown className="hidden size-4 lg:block" />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" sideOffset={8} className="w-64">
+                <div className="space-y-1 px-3 py-2">
+                    <p className="truncate text-sm font-semibold">{user?.name || "My account"}</p>
+                    <p className="truncate text-xs text-muted-foreground">{user?.email}</p>
+                </div>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem render={<Link href="/profile" />} onClick={() => setIsOpen(false)} className="px-3 py-2">
+                    <UserRound /> Profile Settings
+                </DropdownMenuItem>
+                <DropdownMenuItem render={<Link href={dashboardHref} />} onClick={() => setIsOpen(false)} className="px-3 py-2">
+                    <LayoutDashboard /> Dashboard
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem variant="destructive" onClick={handleSignOut} className="px-3 py-2">
+                    <LogOut /> Logout
+                </DropdownMenuItem>
+            </DropdownMenuContent>
+        </DropdownMenu>
     )
 
     const themeToggle = (
@@ -189,6 +221,7 @@ const Navbar = () => {
                     </div>
 
                     <div className="flex shrink-0 items-center gap-2 lg:hidden">
+                        {user && afterLoginRenderAuth()}
                         {themeToggle}
                         <CollapsibleTrigger
                             render={<Button variant="outline" size="icon" />}
@@ -220,9 +253,11 @@ const Navbar = () => {
                             {renderLinks(true)}
                         </NavigationMenuList>
                     </NavigationMenu>
-                    <div className="grid grid-cols-2 gap-3 border-t border-border pt-4">
-                        {renderAuth()}
-                    </div>
+                    {!user && (
+                        <div className="grid grid-cols-2 gap-3 border-t border-border pt-4">
+                            {renderAuth()}
+                        </div>
+                    )}
                 </CollapsibleContent>
             </header>
         </Collapsible>
