@@ -185,8 +185,8 @@ export default function Footer() {
                                 </Link>
                             </li>
                             <li>
-                                <Link href="/profile" className={linkStyle}>
-                                    My profile
+                                <Link href="/sign-up" className={linkStyle}>
+                                    Sign up
                                 </Link>
                             </li>
                             <li>
