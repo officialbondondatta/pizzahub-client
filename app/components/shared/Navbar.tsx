@@ -19,11 +19,9 @@ import {
     NavigationMenuLink,
 } from "@/components/ui/navigation-menu"
 import pizzahublogo from "../../assets/pizzahublogo.svg"
+import { authClient, useSession } from "@/app/lib/auth-client";
+import { toast } from "@/components/ui/toast";
 
-const navigation = [
-    { label: "Home", href: "/" },
-    { label: "Browse menu", href: "/menu" },
-]
 
 const focusStyles =
     "focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring"
@@ -34,7 +32,24 @@ const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false)
     const headerRef = useRef<HTMLElement>(null)
     const toggleRef = useRef<HTMLButtonElement>(null)
+    const { data: session } = useSession()
+    const user = session?.user
 
+    const navigation = [
+        { label: "Home", href: "/" },
+        { label: "Browse menu", href: "/menu" },
+        { label: "Dashboard", href: `/dashboard/${user?.role}` }
+    ]
+
+    const handleSignOut = async () => {
+        const { data, error } = await authClient.signOut()
+        console.log("Sign-out successful", { data, error })
+        toast.add({
+            title: error ? "Sign-out failed" : "Sign-out successful",
+            description: error ? error.message : "You have successfully signed out.",
+            type: error ? "error" : "success",
+        })
+    }
     useEffect(() => {
         if (!isOpen) return
 
@@ -107,6 +122,17 @@ const Navbar = () => {
             </Button>
         </>
     )
+    const afterLoginRenderAuth = () => (
+        <>
+            <Button
+                variant="outline"
+                onClick={handleSignOut}
+                className={`${focusStyles} h-11 rounded-sm border border-border px-5 py-2.5 text-center text-sm font-semibold text-foreground transition-colors hover:border-primary hover:bg-accent motion-reduce:transition-none`}
+            >
+                Sign Out
+            </Button>
+        </>
+    )
 
     const themeToggle = (
         <Button
@@ -156,7 +182,9 @@ const Navbar = () => {
                         </NavigationMenuList>
                     </NavigationMenu>
                     <div className="hidden items-center justify-end gap-3 lg:flex">
-                        {renderAuth()}
+                        {
+                            user ? afterLoginRenderAuth() : renderAuth()
+                        }
                         {themeToggle}
                     </div>
 
