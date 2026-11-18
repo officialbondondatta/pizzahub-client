@@ -1,4 +1,5 @@
 import { betterAuth } from "better-auth";
+import { getOAuthState } from "better-auth/api";
 import { MongoClient } from "mongodb";
 import { mongodbAdapter } from "@better-auth/mongo-adapter";
 
@@ -26,9 +27,11 @@ export const auth = betterAuth({
         google: {
             clientId: process.env.GOOGLE_CLIENT_ID as string,
             clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
-            mapProfileToUser: () => ({
-                role: "customer",
-            }),
+            mapProfileToUser: async () => {
+                const state = await getOAuthState();
+                // Only the two self-service roles are accepted from OAuth state.
+                return { role: state?.role === "vendor" ? "vendor" : "customer" };
+            },
         },
     },
 });

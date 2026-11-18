@@ -4,6 +4,7 @@ import { useState, type FormEvent } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { ArrowLeft, Eye, EyeOff, ShoppingBag, UserRound } from "lucide-react"
+import { GoogleRoleDialog } from "@/components/google-role-dialog"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -34,30 +35,6 @@ export default function SignUpPage() {
     const [role, setRole] = useState("customer")
     const [showPassword, setShowPassword] = useState(false)
     const router = useRouter()
-    const handleGoogleSignUp = async () => {
-        try {
-            const { error } = await authClient.signIn.social({
-                provider: "google",
-                callbackURL: `${process.env.NEXT_PUBLIC_BETTER_AUTH_URL}`,
-            });
-            if (error) {
-                toast.add({
-                    title: "Google sign-up failed",
-                    description: error.message,
-                    type: "error",
-                });
-            }
-        } catch (error) {
-            toast.add({
-                title: "Google sign-up failed",
-                description:
-                    error instanceof Error
-                        ? error.message
-                        : "An unexpected error occurred. Please try again.",
-                type: "error",
-            });
-        }
-    };
     async function handleSubmit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault()
         const form = event.currentTarget
@@ -166,14 +143,7 @@ export default function SignUpPage() {
                                 ))}
                             </div>
                         </fieldset>
-                        <Button
-                            type="button"
-                            variant="outline"
-                            onClick={handleGoogleSignUp}
-                            className="h-11 w-full border-[#e6dbcf] bg-white text-[#2b2521] hover:bg-[#f9eee2] dark:border-[#e6dbcf] dark:bg-white dark:hover:bg-[#f9eee2]"
-                        >
-                            Continue with Google
-                        </Button>
+                        <GoogleRoleDialog />
                         <div className="flex items-center gap-5 text-xs text-[#8b7e73]">
                             <span className="h-px flex-1 bg-[#e6dbcf]" />
                             or
