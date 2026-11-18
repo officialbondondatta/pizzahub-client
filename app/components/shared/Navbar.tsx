@@ -38,7 +38,7 @@ const Navbar = () => {
     const navigation = [
         { label: "Home", href: "/" },
         { label: "Browse menu", href: "/menu" },
-        { label: "Dashboard", href: `/dashboard/${user?.role}` }
+        ...(user ? [{ label: "Dashboard", href: `/dashboard/${user?.role}` }] : [])
     ]
 
     const handleSignOut = async () => {
