@@ -14,14 +14,7 @@ import { IMenuItem } from "@/app/Types/menu-items";
 type ItemStatus = "pending" | "accepted" | "rejected"
 const initialStatus: ItemStatus = "pending"
 const inputClass = "h-11 rounded-xl bg-background"
-const categories = [
-    "Classic Pizzas",
-    "Vegetarian Pizzas",
-    "Meat Lovers",
-    "Specialty / Gourmet Pizzas",
-    "Sides & Appetizers",
-    "Beverages & Desserts",
-] as const
+import { menuCategories as categories } from "@/app/lib/menu-categories"
 
 export default function AddMenuItems() {
     const { data: session } = useSession()
