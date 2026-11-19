@@ -1,14 +1,29 @@
 "use client"
 
 import Image from "next/image"
-import Link from "next/link"
 import { MapPin } from "lucide-react"
 import type { IMenuItem } from "@/app/Types/menu-items"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import VendorPlaceholder from "./VendorPlaceholder"
+import { useRouter } from "next/navigation";
+import { toast } from "@/components/ui/toast";
+import { useSession } from "@/app/lib/auth-client";
 
 export default function MenuCard({ item }: { item: IMenuItem }) {
+  const router = useRouter()
+  const { data: session, isPending } = useSession()
+  const handleViewDetails = () => {
+    if (!session) {
+      toast.add({
+        title: "You can not view details",
+        description: " Sign in to view details"
+      })
+      router.push('/sign-in')
+      return
+    }
+    router.push(`/browse-menu/${item._id}`)
+  }
   return (
     <Card className="h-full gap-0 rounded-2xl py-0 shadow-sm">
       <div className="relative aspect-4/3 overflow-hidden bg-muted">
@@ -24,7 +39,7 @@ export default function MenuCard({ item }: { item: IMenuItem }) {
       <CardContent className="flex flex-1 flex-col gap-4 p-5">
         <div>
           <p className="mb-2 text-sm text-muted-foreground">{item.category}</p>
-          <h2 className="text-xl font-semibold break-words">{item.name}</h2>
+          <h2 className="text-xl font-semibold wrap-break-word">{item.name}</h2>
           <p className="mt-2 text-xl font-bold">
             ৳{item.price.toLocaleString("en-BD")}
           </p>
@@ -38,8 +53,8 @@ export default function MenuCard({ item }: { item: IMenuItem }) {
         </div>
         {item._id ? (
           <Button
-            nativeButton={false}
-            render={<Link href={`/browse-menu/${item._id}`} />}
+            disabled={isPending}
+            onClick={handleViewDetails}
             className="h-11 rounded-xl bg-brand-700 text-white hover:bg-brand-800"
           >
             View details

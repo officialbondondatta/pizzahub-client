@@ -14,21 +14,6 @@ export default async function MenuItemDetailsPage({
   params: Promise<{ id: string }>
 }) {
   const { id } = await params
-  if (!/^[a-f\d]{24}$/i.test(id)) notFound()
-  // The existing details endpoint requires a signed-in user.
-  const session = await getSessionNow()
-  if (!session)
-    return (
-      <div className="mx-auto max-w-xl px-6 py-20 text-center">
-        <h1 className="text-2xl font-bold">Sign in to view item details</h1>
-        <Link
-          href="/sign-in"
-          className="mt-6 inline-block rounded-xl bg-brand-700 px-6 py-3 text-white"
-        >
-          Sign in
-        </Link>
-      </div>
-    )
   const item = await getSingleItemDetails(id)
   if (!item) notFound()
 
@@ -41,7 +26,7 @@ export default async function MenuItemDetailsPage({
         Back to menu
       </Link>
       <Card className="mt-6 grid gap-0 rounded-2xl py-0 shadow-sm lg:grid-cols-2">
-        <div className="relative min-h-80 bg-muted lg:min-h-[620px]">
+        <div className="relative min-h-80 bg-muted lg:min-h-155">
           <Image
             src={item.image}
             alt={item.name}
