@@ -1,13 +1,15 @@
 "use client"
 import { useEffect, useState, type FormEvent } from "react"
 import Image from "next/image"
-import { Clock3, Pizza } from "lucide-react"
+import { Clock3, LoaderIcon, Pizza } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import familyPizza from "@/app/assets/signin-family.png"
 import { useSession } from "@/app/lib/auth-client";
 import { toast } from "@/components/ui/toast";
+import { addMenuItems } from "@/app/lib/actions/menu-items";
+import { IMenuItem } from "@/app/Types/menu-items";
 
 type ItemStatus = "pending" | "accepted" | "rejected"
 const initialStatus: ItemStatus = "pending"
@@ -26,7 +28,7 @@ export default function AddMenuItems() {
     const user = session?.user
     const [uploading, setUplaoding] = useState(false)
     const [imagePreview, setImagePreview] = useState<string | null>(null)
-
+    const [loading, setLoading] = useState(false)
     useEffect(() => {
         return () => {
             if (imagePreview) URL.revokeObjectURL(imagePreview)
@@ -48,6 +50,7 @@ export default function AddMenuItems() {
     async function handleSubmit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault()
         setUplaoding(true)
+        setLoading(true)
         if (!user) {
             toast.add({
                 title: "You can not add items",
@@ -69,9 +72,27 @@ export default function AddMenuItems() {
                 return
             }
             const imageURL = await handleUploadToImgBB(imageFile)
-            const itemDetails = { ...Object.fromEntries(formData.entries()), userId: user.id, image: imageURL }
-            setUplaoding(false)
-            console.log(itemDetails)
+            const itemDetails: IMenuItem = {
+                name: String(formData.get("name") ?? ""),
+                category: String(formData.get("category") ?? ""),
+                description: String(formData.get("description") ?? ""),
+                location: String(formData.get("location") ?? ""),
+                price: Number(formData.get("price")),
+                status: initialStatus,
+                userId: user.id,
+                image: imageURL,
+            }
+            const res = await addMenuItems(itemDetails)
+            if (res.insertedId) {
+                setUplaoding(false)
+                setLoading(false)
+                form.reset()
+                setImagePreview(null)
+                toast.add({
+                    title: "Item added successfully",
+                    description: "Wait for admin approval"
+                })
+            }
         }
         catch (err) {
             toast.add({
@@ -80,6 +101,9 @@ export default function AddMenuItems() {
                     ? err.message
                     : "Something went wrong",
             });
+        }
+        finally {
+            setUplaoding(false)
         }
 
     }
@@ -245,19 +269,29 @@ export default function AddMenuItems() {
                             type="submit"
                             className="h-11 w-full rounded-xl bg-brand-700 px-6 text-white hover:bg-brand-800 sm:w-auto"
                         >
-                            Add Item to menu
+                            {loading ?
+                                <>
+                                    <LoaderIcon></LoaderIcon>
+                                    <span>
+                                        adding item to menu
+                                    </span>
+                                </>
+                                : "Add item to menu"}
                         </Button>
                     </div>
                 </form>
                 <aside className="relative isolate hidden min-h-full overflow-hidden bg-brand-950 lg:flex lg:items-end">
-                    <Image
-                        src={familyPizza}
-                        alt="A family enjoying pizza together at a warm, welcoming restaurant"
-                        fill
-                        loading="eager"
-                        sizes="(min-width: 1024px) 40vw, 1px"
-                        className="-z-20 object-cover object-top"
-                    />
+                    {/* Prevent React's automatic eager-image preload for this responsive aside. */}
+                    <picture className="absolute inset-0 -z-20">
+                        <Image
+                            src={familyPizza}
+                            alt="A family enjoying pizza together at a warm, welcoming restaurant"
+                            fill
+                            loading="eager"
+                            sizes="(min-width: 1024px) 40vw, 1px"
+                            className="object-cover object-top"
+                        />
+                    </picture>
                     <div
                         aria-hidden="true"
                         className="absolute inset-0 -z-10 bg-linear-to-t from-brand-950 via-brand-950/10 to-transparent"
