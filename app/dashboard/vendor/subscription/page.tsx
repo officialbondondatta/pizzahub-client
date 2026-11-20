@@ -3,6 +3,7 @@
 import Image from "next/image"
 import { ArrowUpRight, Check, Crown, Pizza, Sparkles } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { useSession } from "@/app/lib/auth-client";
 
 const plans = [
   {
@@ -29,6 +30,11 @@ const plans = [
 ]
 
 export default function SubscriptionPage() {
+  const { data: session } = useSession()
+  const userPlan = session?.user.plan
+  const handleSwitchingPlan = () => {
+    console.log("swtich to free")
+  }
   return (
     <div className="mx-auto max-w-6xl space-y-8">
       <header>
@@ -127,9 +133,21 @@ export default function SubscriptionPage() {
                     <ArrowUpRight className="size-4" aria-hidden="true" />
                   </Button>
                 ) : (
-                  <p className="mt-8 rounded-xl bg-muted/60 px-4 py-3 text-center text-sm text-muted-foreground">
-                    Everything you need to begin
-                  </p>
+                  <Button disabled={userPlan === "free"} className={`mt-8  rounded-xl cursor-pointer disabled:cursor-not-allowed bg-muted/60 px-4 py-5 text-center text-sm text-muted-foreground`} onClick={handleSwitchingPlan}>
+                    {
+                      userPlan === "free" ?
+                        <>
+                          Current Plan
+                        </>
+                        :
+                        userPlan === "premium" ?
+                          <>
+                            Switch Back to Free
+                          </>
+                          :
+                          "Current Plan"
+                    }
+                  </Button>
                 )}
               </article>
             )
