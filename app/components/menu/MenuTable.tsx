@@ -154,31 +154,44 @@ export default function MenuTable({ items }: { items: IMenuItem[] }) {
                 <div className="flex items-center gap-2">
                   {item._id ? (
                     <Button
-                      className="h-10 bg-brand-600 text-white shadow-sm hover:bg-brand-700"
+                      size="icon"
+                      aria-label={`View details for ${item.name}`}
+                      title="View details"
+                      className="size-10 bg-brand-600 text-white shadow-sm hover:bg-brand-700"
                       nativeButton={false}
                       render={<Link href={`/browse-menu/${item._id}`} />}
                     >
                       <Eye aria-hidden="true" />
-                      View details
                     </Button>
                   ) : (
-                    <Button disabled>Details unavailable</Button>
+                    <Button
+                      disabled
+                      size="icon"
+                      aria-label="Details unavailable"
+                      title="Details unavailable"
+                    >
+                      <Eye aria-hidden="true" />
+                    </Button>
                   )}
                   <Button
                     variant="outline"
-                    className="h-10 border-sky-200 bg-sky-50 text-sky-800 hover:bg-sky-100 dark:border-sky-800 dark:bg-sky-950 dark:text-sky-200 dark:hover:bg-sky-900"
+                    size="icon"
+                    aria-label={`Update ${item.name}`}
+                    title="Update"
+                    className="size-10 border-sky-200 bg-sky-50 text-sky-800 hover:bg-sky-100 dark:border-sky-800 dark:bg-sky-950 dark:text-sky-200 dark:hover:bg-sky-900"
                     onClick={() => console.log("Update menu item", item._id)}
                   >
                     <Pencil aria-hidden="true" />
-                    Update
                   </Button>
                   <Button
                     variant="destructive"
-                    className="h-10"
+                    size="icon"
+                    aria-label={`Delete ${item.name}`}
+                    title="Delete"
+                    className="size-10"
                     onClick={() => console.log("Delete menu item", item._id)}
                   >
                     <Trash2 aria-hidden="true" />
-                    Delete
                   </Button>
                 </div>
               </TableCell>
