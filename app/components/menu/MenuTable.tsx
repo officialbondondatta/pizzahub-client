@@ -33,7 +33,7 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select"
-import { deleteMenuItem } from "@/app/lib/actions/menu-items";
+import { changeAvailability, deleteMenuItem } from "@/app/lib/actions/menu-items";
 import { toast } from "@/components/ui/toast";
 import { router } from "better-auth/api";
 import { useRouter } from "next/navigation";
@@ -64,6 +64,25 @@ export default function MenuTable({ items }: { items: IMenuItem[] }) {
         description: "Item Deleted Successfully"
       })
       router.refresh()
+    }
+  }
+  const handleAvailablity = async (id: string, value: string) => {
+    console.log("change", id, value)
+    const data = {
+      isActive: true
+    }
+    if (value === "Active") {
+      data.isActive = true
+    }
+    if (value === "Inactive") {
+      data.isActive = false
+    }
+    const res = await changeAvailability(id, data)
+    if (res.modifiedCount > 0) {
+      toast.add({
+        title: "Successful",
+        description: "Item availablity changed"
+      })
     }
   }
   return (
@@ -156,11 +175,7 @@ export default function MenuTable({ items }: { items: IMenuItem[] }) {
               <TableCell className="px-5 py-4">
                 <Select
                   defaultValue={item.isActive ? "Active" : "Inactive"}
-                  onValueChange={(value) =>
-                    console.log("Change availability", {
-                      id: item._id,
-                      isActive: value === "Active",
-                    })
+                  onValueChange={(value) => handleAvailablity(item._id as string, value as string)
                   }
                 >
                   <SelectTrigger

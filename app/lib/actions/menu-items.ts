@@ -105,3 +105,23 @@ export const deleteMenuItem = async (id: string) => {
   })
   return res.json()
 }
+
+interface IAvailability {
+  isActive: boolean
+}
+
+export const changeAvailability = async (id: string, data: IAvailability) => {
+  const session = await getSessionNow()
+  if (!session) throw new Error("Sign in to view your menu items")
+  const token = session.session.token
+
+  const res = await fetch(`${BASEURL}/menu-items/availability/${id}`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+      authorization: `Bearer ${token}`
+    },
+    body: JSON.stringify(data)
+  })
+  return res.json()
+}
