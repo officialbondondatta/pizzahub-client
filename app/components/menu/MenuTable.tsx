@@ -50,7 +50,6 @@ const statusStyles = {
 export default function MenuTable({ items }: { items: IMenuItem[] }) {
   const router = useRouter()
   const handleDeleteItem = async (id: string) => {
-    console.log(id)
     if (!id) {
       toast.add({
         title: "Item not found"
@@ -67,7 +66,6 @@ export default function MenuTable({ items }: { items: IMenuItem[] }) {
     }
   }
   const handleAvailablity = async (id: string, value: string) => {
-    console.log("change", id, value)
     const data = {
       isActive: true
     }
