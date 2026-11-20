@@ -74,3 +74,20 @@ export const getAllMenuItems = async (): Promise<IMenuItem[]> => {
   const result = await fetch(`${BASEURL}/menu-items`)
   return readMenuResponse<IMenuItem[]>(result)
 }
+
+export const updateMenuItem = async (id: string, data: Partial<IMenuItem>) => {
+  const session = await getSessionNow()
+  if (!session) throw new Error("Sign in to view your menu items")
+  const token = session.session.token
+  const res = await fetch(`${BASEURL}/menu-items/${encodeURIComponent(id)}`, {
+    method: "PATCH",
+    cache: 'no-cache',
+    headers: {
+      "Content-Type": "application/json",
+      authorization: `Bearer ${token}`
+    },
+    body: JSON.stringify(data)
+  })
+  if (!res.ok) throw new Error("Failed to update menu item")
+  return res.json()
+}

@@ -2,15 +2,7 @@
 
 import Image from "next/image"
 import Link from "next/link"
-import {
-  Eye,
-  Pencil,
-  Trash2,
-  MapPin,
-  Clock3,
-  CircleCheck,
-  CircleX,
-} from "lucide-react"
+import { Eye, Trash2, MapPin, Clock3, CircleCheck, CircleX } from "lucide-react"
 import type { IMenuItem } from "@/app/Types/menu-items"
 import { Badge } from "@/components/ui/badge"
 import {
@@ -23,6 +15,17 @@ import {
   TableCaption,
 } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
+import UpdateMenuItemDialog from "./UpdateMenuItemDialog"
+import {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+  DialogClose,
+} from "@/components/ui/dialog"
 import {
   Select,
   SelectTrigger,
@@ -48,7 +51,7 @@ export default function MenuTable({ items }: { items: IMenuItem[] }) {
       aria-label="Your menu items"
       tabIndex={0}
     >
-      <Table className="w-full min-w-[900px] text-left text-sm">
+      <Table className="w-full min-w-225 text-left text-sm">
         <TableCaption className="sr-only">
           Your menu items and their review status
         </TableCaption>
@@ -89,7 +92,7 @@ export default function MenuTable({ items }: { items: IMenuItem[] }) {
                     unoptimized
                     className="size-16 shrink-0 rounded-xl object-cover shadow-sm ring-2 ring-brand-300/60"
                   />
-                  <span className="max-w-60 min-w-32 text-base font-semibold break-words whitespace-normal">
+                  <span className="max-w-60 min-w-32 text-base font-semibold wrap-break-word whitespace-normal">
                     {item.name}
                   </span>
                 </div>
@@ -173,26 +176,46 @@ export default function MenuTable({ items }: { items: IMenuItem[] }) {
                       <Eye aria-hidden="true" />
                     </Button>
                   )}
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    aria-label={`Update ${item.name}`}
-                    title="Update"
-                    className="size-10 border-sky-200 bg-sky-50 text-sky-800 hover:bg-sky-100 dark:border-sky-800 dark:bg-sky-950 dark:text-sky-200 dark:hover:bg-sky-900"
-                    onClick={() => console.log("Update menu item", item._id)}
-                  >
-                    <Pencil aria-hidden="true" />
-                  </Button>
-                  <Button
-                    variant="destructive"
-                    size="icon"
-                    aria-label={`Delete ${item.name}`}
-                    title="Delete"
-                    className="size-10"
-                    onClick={() => console.log("Delete menu item", item._id)}
-                  >
-                    <Trash2 aria-hidden="true" />
-                  </Button>
+                  <UpdateMenuItemDialog item={item} />
+                  <Dialog>
+                    <DialogTrigger
+                      render={
+                        <Button
+                          variant="destructive"
+                          size="icon"
+                          aria-label={`Delete ${item.name}`}
+                          title="Delete"
+                          className="size-10"
+                        />
+                      }
+                    >
+                      <Trash2 aria-hidden="true" />
+                    </DialogTrigger>
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogTitle>Delete menu item?</DialogTitle>
+                        <DialogDescription>
+                          Are you sure you want to delete {item.name}?
+                        </DialogDescription>
+                      </DialogHeader>
+                      <DialogFooter>
+                        <DialogClose render={<Button variant="outline" />}>
+                          Cancel
+                        </DialogClose>
+                        <DialogClose
+                          render={<Button variant="destructive" />}
+                          onClick={() =>
+                            console.log("Delete menu item", {
+                              id: item._id,
+                              name: item.name,
+                            })
+                          }
+                        >
+                          Delete
+                        </DialogClose>
+                      </DialogFooter>
+                    </DialogContent>
+                  </Dialog>
                 </div>
               </TableCell>
             </TableRow>
