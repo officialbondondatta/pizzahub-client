@@ -1,13 +1,17 @@
 "use client"
 import { useSession } from '@/app/lib/auth-client';
 import { Button } from '@/components/ui/button';
+import { toast } from '@/components/ui/toast';
 
 
 const SwtichToFreeButton = () => {
     const { data: session } = useSession()
     const userPlan = session?.user?.plan
     const handleSwitchingPlan = () => {
-        console.log("swtich to free")
+        toast.add({
+            title: "Not available now",
+            description: "Feature will be available soon"
+        })
     }
 
     return (
