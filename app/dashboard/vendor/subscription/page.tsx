@@ -1,9 +1,8 @@
-"use client"
-
 import Image from "next/image"
-import { ArrowUpRight, Check, Crown, Pizza, Sparkles } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { useSession } from "@/app/lib/auth-client";
+import { Check, Crown, Pizza, Sparkles } from "lucide-react"
+import UpgrateToPremiumButton from "@/app/components/subscription/UpgrateToPremiumButton"
+import SwtichToFreeButton from "@/app/components/subscription/SwtichToFreeButton"
+import { redirect } from "next/navigation"
 
 const plans = [
   {
@@ -28,13 +27,16 @@ const plans = [
     ],
   },
 ]
+type SubscriptionPageProps = {
+  searchParams: Promise<{ canceled?: string | string[] }>
+}
 
-export default function SubscriptionPage() {
-  const { data: session } = useSession()
-  const userPlan = session?.user.plan
-  const handleSwitchingPlan = () => {
-    console.log("swtich to free")
+const SubscriptionPage = async ({ searchParams }: SubscriptionPageProps) => {
+  const { canceled } = await searchParams
+  if (canceled === "true") {
+    redirect("/payment/cancel")
   }
+
   return (
     <div className="mx-auto max-w-6xl space-y-8">
       <header>
@@ -120,34 +122,9 @@ export default function SubscriptionPage() {
                   ))}
                 </ul>
                 {premium ? (
-                  <Button
-                    type="button"
-                    onClick={() =>
-                      console.log("Upgrade to Premium clicked", {
-                        plan: "premium",
-                      })
-                    }
-                    className="mt-8 h-12 w-full gap-2 rounded-xl bg-brand-700 text-white hover:bg-brand-800"
-                  >
-                    Upgrade to Premium{" "}
-                    <ArrowUpRight className="size-4" aria-hidden="true" />
-                  </Button>
+                  <UpgrateToPremiumButton></UpgrateToPremiumButton>
                 ) : (
-                  <Button disabled={userPlan === "free"} className={`mt-8  rounded-xl cursor-pointer disabled:cursor-not-allowed bg-muted/60 px-4 py-5 text-center text-sm text-muted-foreground`} onClick={handleSwitchingPlan}>
-                    {
-                      userPlan === "free" ?
-                        <>
-                          Current Plan
-                        </>
-                        :
-                        userPlan === "premium" ?
-                          <>
-                            Switch Back to Free
-                          </>
-                          :
-                          "Current Plan"
-                    }
-                  </Button>
+                  <SwtichToFreeButton></SwtichToFreeButton>
                 )}
               </article>
             )
@@ -157,3 +134,5 @@ export default function SubscriptionPage() {
     </div>
   )
 }
+
+export default SubscriptionPage
