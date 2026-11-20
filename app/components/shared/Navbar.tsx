@@ -37,10 +37,12 @@ const Navbar = () => {
     const pathname = usePathname()
     const { resolvedTheme, setTheme } = useTheme()
     const [isOpen, setIsOpen] = useState(false)
+    const [failedAvatar, setFailedAvatar] = useState<string | null>(null)
     const headerRef = useRef<HTMLElement>(null)
     const toggleRef = useRef<HTMLButtonElement>(null)
     const { data: session } = useSession()
     const user = session?.user
+    const avatarUrl = user?.image?.trim()
     const role: string | null | undefined = user?.role
     const dashboardRole = role === "admin" || role === "vendor" ? role : "customer"
     const dashboardHref = `/dashboard/${dashboardRole}`
@@ -140,8 +142,18 @@ const Navbar = () => {
                 aria-label="Open profile menu"
                 className="h-11 gap-2 rounded-xl px-2 lg:px-3"
             >
-                <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary text-xs font-semibold text-primary-foreground">
-                    {initials}
+                <span className="flex size-8 shrink-0 items-center justify-center overflow-hidden rounded-full bg-primary text-xs font-semibold text-primary-foreground">
+                    {avatarUrl && failedAvatar !== avatarUrl ? (
+                        // Profile images can be hosted by any provider, as on the profile page.
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                            src={avatarUrl}
+                            alt=""
+                            className="size-full object-cover"
+                            referrerPolicy="no-referrer"
+                            onError={() => setFailedAvatar(avatarUrl)}
+                        />
+                    ) : initials}
                 </span>
                 <span className="hidden max-w-28 truncate lg:block">{user?.name || "My account"}</span>
                 <ChevronDown className="hidden size-4 lg:block" />
