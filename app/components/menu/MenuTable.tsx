@@ -33,6 +33,10 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select"
+import { deleteMenuItem } from "@/app/lib/actions/menu-items";
+import { toast } from "@/components/ui/toast";
+import { router } from "better-auth/api";
+import { useRouter } from "next/navigation";
 
 const statusStyles = {
   pending:
@@ -44,6 +48,24 @@ const statusStyles = {
 }
 
 export default function MenuTable({ items }: { items: IMenuItem[] }) {
+  const router = useRouter()
+  const handleDeleteItem = async (id: string) => {
+    console.log(id)
+    if (!id) {
+      toast.add({
+        title: "Item not found"
+      })
+      return
+    }
+    const result = await deleteMenuItem(id)
+    if (result.deletedCount > 0) {
+      toast.add({
+        title: "Successfull",
+        description: "Item Deleted Successfully"
+      })
+      router.refresh()
+    }
+  }
   return (
     <div
       className="overflow-hidden rounded-2xl border border-brand-300 bg-card shadow-lg shadow-brand-900/5 dark:border-brand-800"
@@ -204,12 +226,7 @@ export default function MenuTable({ items }: { items: IMenuItem[] }) {
                         </DialogClose>
                         <DialogClose
                           render={<Button variant="destructive" />}
-                          onClick={() =>
-                            console.log("Delete menu item", {
-                              id: item._id,
-                              name: item.name,
-                            })
-                          }
+                          onClick={() => handleDeleteItem(item._id as string)}
                         >
                           Delete
                         </DialogClose>

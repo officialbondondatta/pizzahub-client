@@ -91,3 +91,17 @@ export const updateMenuItem = async (id: string, data: Partial<IMenuItem>) => {
   if (!res.ok) throw new Error("Failed to update menu item")
   return res.json()
 }
+
+export const deleteMenuItem = async (id: string) => {
+  const session = await getSessionNow()
+  if (!session) throw new Error("Sign in to view your menu items")
+  const token = session.session.token
+
+  const res = await fetch(`${BASEURL}/menu-items/${id}`, {
+    method: "DELETE",
+    headers: {
+      authorization: `Bearer ${token}`
+    }
+  })
+  return res.json()
+}
