@@ -4,6 +4,7 @@ export interface IUser {
   name: string
   email: string
   password: string
+  plan: "free" | "premium"
   role: "customer" | "vendor" | "admin"
   image?: string
 }

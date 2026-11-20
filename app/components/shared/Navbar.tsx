@@ -27,6 +27,7 @@ import {
 import BrandLogo from "./BrandLogo"
 import { authClient, useSession } from "@/app/lib/auth-client";
 import { toast } from "@/components/ui/toast";
+import SubscriptionPlan from "@/app/utils/SubscriptionPlan";
 
 
 const focusStyles =
@@ -148,7 +149,11 @@ const Navbar = () => {
             <DropdownMenuContent align="end" sideOffset={8} className="w-64">
                 <div className="space-y-1 px-3 py-2">
                     <p className="truncate text-sm font-semibold">{user?.name || "My account"}</p>
-                    <p className="truncate text-xs text-muted-foreground">{user?.email}</p>
+                    <div className="flex gap-1">
+                        <p className="truncate text-xs text-muted-foreground">{user?.email}</p>
+                        <p className="truncate text-xs text-muted-foreground">| {user?.role}</p>
+                    </div>
+                    <SubscriptionPlan plan={user?.plan ?? "free"}></SubscriptionPlan>
                 </div>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem render={<Link href="/profile" />} onClick={() => setIsOpen(false)} className="px-3 py-2">

@@ -47,6 +47,7 @@ export default function SignUpPage() {
             name: formData.get("name") as string,
             email: formData.get("email") as string,
             password: formData.get("password") as string,
+            plan: "free",
             role: role === "vendor" ? "vendor" : "customer",
             image: String(formData.get("image") ?? "").trim(),
         }

@@ -16,6 +16,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { toast } from "@/components/ui/toast";
+import SubscriptionPlan from "@/app/utils/SubscriptionPlan";
 
 function ProfileBackdrop({ children }: { children: ReactNode }) {
   return (
@@ -49,6 +50,7 @@ function ProfileForm({
     email: string
     image?: string | null
     role?: string | null
+    plan: string
   }
 }) {
   const [name, setName] = useState(user.name)
@@ -124,9 +126,14 @@ function ProfileForm({
           <h2 className="mt-1 truncate text-xl font-semibold">
             {name.trim() || "Your profile"}
           </h2>
-          <span className="mt-2 inline-flex rounded-full border border-primary/30 bg-primary/20 px-3 py-1 text-xs font-medium capitalize">
-            {user.role || "customer"}
-          </span>
+          <div className="flex gap-2 items-center text-center">
+
+            <span className="mt-2 inline-flex rounded-full border border-primary/30 bg-primary/20 px-3 py-1 text-xs font-medium capitalize">
+              {user.role || "customer"}
+            </span>
+            <SubscriptionPlan plan={user.plan}></SubscriptionPlan>
+
+          </div>
         </div>
       </div>
       <form onSubmit={handleSubmit} className="space-y-6 p-6 sm:p-9">

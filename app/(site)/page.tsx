@@ -19,7 +19,7 @@ export default function HomePage() {
       />
       <div
         aria-hidden="true"
-        className="absolute inset-0 -z-10 bg-gradient-to-t from-brand-950 via-brand-950/65 to-brand-950/5 sm:bg-gradient-to-r sm:from-brand-950/95 sm:via-brand-950/65 sm:to-transparent"
+        className="absolute inset-0 -z-10 bg-linear-to-t from-brand-950 via-brand-950/65 to-brand-950/5 sm:bg-gradient-to-r sm:from-brand-950/95 sm:via-brand-950/65 sm:to-transparent"
       />
       <div className="mx-auto w-full max-w-7xl px-6 py-12 sm:py-20 lg:px-8">
         <div className="max-w-xl">
