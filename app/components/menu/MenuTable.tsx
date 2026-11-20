@@ -23,6 +23,13 @@ import {
   TableCaption,
 } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "@/components/ui/select"
 
 const statusStyles = {
   pending:
@@ -47,17 +54,23 @@ export default function MenuTable({ items }: { items: IMenuItem[] }) {
         </TableCaption>
         <TableHeader className="border-b border-brand-600 bg-brand-700 [&_tr:hover]:bg-brand-700">
           <TableRow>
-            {["Item", "Category", "Price", "Location", "Status", "Actions"].map(
-              (label) => (
-                <TableHead
-                  key={label}
-                  scope="col"
-                  className="px-5 py-4 text-xs font-semibold tracking-wider text-white uppercase"
-                >
-                  {label}
-                </TableHead>
-              )
-            )}
+            {[
+              "Item",
+              "Category",
+              "Price",
+              "Location",
+              "Status",
+              "Availability",
+              "Actions",
+            ].map((label) => (
+              <TableHead
+                key={label}
+                scope="col"
+                className="px-5 py-4 text-xs font-semibold tracking-wider text-white uppercase"
+              >
+                {label}
+              </TableHead>
+            ))}
           </TableRow>
         </TableHeader>
         <TableBody className="divide-y">
@@ -114,6 +127,28 @@ export default function MenuTable({ items }: { items: IMenuItem[] }) {
                   )}
                   {item.status}
                 </Badge>
+              </TableCell>
+              <TableCell className="px-5 py-4">
+                <Select
+                  defaultValue={item.isActive ? "Active" : "Inactive"}
+                  onValueChange={(value) =>
+                    console.log("Change availability", {
+                      id: item._id,
+                      isActive: value === "Active",
+                    })
+                  }
+                >
+                  <SelectTrigger
+                    aria-label={`Availability for ${item.name}`}
+                    className="min-w-28 bg-background data-[size=default]:h-10"
+                  >
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Active">Active</SelectItem>
+                    <SelectItem value="Inactive">Inactive</SelectItem>
+                  </SelectContent>
+                </Select>
               </TableCell>
               <TableCell className="px-5 py-4">
                 <div className="flex items-center gap-2">
