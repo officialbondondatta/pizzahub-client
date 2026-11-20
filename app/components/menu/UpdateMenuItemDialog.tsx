@@ -28,11 +28,13 @@ import {
 } from "@/components/ui/select"
 import { toast } from "@/components/ui/toast"
 import { updateMenuItem } from "@/app/lib/actions/menu-items"
-import { useRouter } from "next/navigation";
+import { useRouter } from "next/navigation"
 
 export default function UpdateMenuItemDialog({ item }: { item: IMenuItem }) {
   const [uploading, setUploading] = useState(false)
   const [loading, setloading] = useState(false)
+  const [category, setCategory] = useState(item.category)
+  const [open, setOpen] = useState(false)
   const id = useId()
   const router = useRouter()
   const formRef = useRef<HTMLFormElement>(null)
@@ -76,7 +78,13 @@ export default function UpdateMenuItemDialog({ item }: { item: IMenuItem }) {
         image: imageURL,
       }
       const result = await updateMenuItem(item._id, updatedItemDetails)
-      console.log(result)
+      if (result.modifiedCount > 0) {
+        toast.add({
+          title: "Item Updated Successfully",
+        })
+      }
+      setOpen(false)
+      router.refresh()
     } catch (err) {
       toast.add({
         title: err instanceof Error ? err.message : "Something went wrong",
@@ -85,12 +93,17 @@ export default function UpdateMenuItemDialog({ item }: { item: IMenuItem }) {
     } finally {
       setUploading(false)
       setloading(false)
-      router.refresh()
     }
   }
 
   return (
-    <Dialog>
+    <Dialog
+      open={open}
+      onOpenChange={(nextOpen) => {
+        setOpen(nextOpen)
+        if (nextOpen) setCategory(item.category)
+      }}
+    >
       <DialogTrigger
         render={
           <Button
@@ -130,7 +143,12 @@ export default function UpdateMenuItemDialog({ item }: { item: IMenuItem }) {
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-2">
               <Label htmlFor={`${id}-category`}>Category</Label>
-              <Select name="category" defaultValue={item.category} required>
+              <Select
+                name="category"
+                value={category}
+                onValueChange={(value) => setCategory(value ?? "")}
+                required
+              >
                 <SelectTrigger id={`${id}-category`} className="w-full">
                   <SelectValue />
                 </SelectTrigger>
