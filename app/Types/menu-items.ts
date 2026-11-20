@@ -7,5 +7,6 @@ export interface IMenuItem {
     location: string
     image: string
     userId: string
+    isActive: boolean
     status: "pending" | "accepted" | "rejected"
 }
