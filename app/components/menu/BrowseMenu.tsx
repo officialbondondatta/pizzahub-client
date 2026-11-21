@@ -92,6 +92,14 @@ export default function BrowseMenu({ items }: { items: IMenuItem[] }) {
         <p className="mb-3 text-sm font-medium">Categories</p>
         {categories.length ? (
           <div className="flex flex-wrap gap-2">
+            <Button
+              variant={category === "" ? "default" : "outline"}
+              aria-pressed={category === ""}
+              onClick={() => setCategory("")}
+              className="h-auto min-h-11 rounded-full px-5 py-2 text-left whitespace-normal"
+            >
+              All
+            </Button>
             {categories.map((option) => (
               <Button
                 key={option}
