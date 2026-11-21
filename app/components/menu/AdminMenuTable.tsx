@@ -30,7 +30,7 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select"
-import { changeAvailability, changeStatus, type IStatus } from "@/app/lib/actions/menu-items"
+import { changeAvailability, changeStatus, deleteMenuItem, type IStatus } from "@/app/lib/actions/menu-items"
 import { useRouter } from "next/navigation";
 import { toast } from "@/components/ui/toast";
 
@@ -79,6 +79,16 @@ export default function AdminMenuTable({ items }: { items: IMenuItem[] }) {
       toast.add({
         title: `Item is ${value} now !`,
         description: " Item availability changed successfully"
+      })
+      router.refresh()
+    }
+  }
+  const handleDeleteItem = async (id: string, item: IMenuItem) => {
+    const result = await deleteMenuItem(id)
+    if (result.deletedCount > 0) {
+      toast.add({
+        title: `${item.name} is deleted`,
+        description: "Item deleted successfully"
       })
       router.refresh()
     }
@@ -302,9 +312,7 @@ export default function AdminMenuTable({ items }: { items: IMenuItem[] }) {
                         <DialogClose
                           render={<Button variant="destructive" />}
                           onClick={() =>
-                            console.log("Delete menu item", {
-                              itemId: item._id,
-                            })
+                            handleDeleteItem(item?._id as string, item)
                           }
                         >
                           Delete
