@@ -7,9 +7,6 @@ import { ArrowUpRight } from 'lucide-react';
 const UpgrateToPremiumButton = () => {
     const { data: session } = useSession()
     const userPlan = session?.user?.plan
-    // const handleUpgradeToPremium = () => {
-    //     console.log("clciked")
-    // }
     return (
         <form action="/api/checkout_sessions" method="POST">
             <section>

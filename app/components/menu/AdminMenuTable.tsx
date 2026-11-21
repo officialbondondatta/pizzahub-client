@@ -56,7 +56,6 @@ export default function AdminMenuTable({ items }: { items: IMenuItem[] }) {
     }
   }
   const handleChangeAvailability = async (id: string, value: string) => {
-    console.log(value)
     let currentData = false
     if (value === "Active") {
       currentData = true

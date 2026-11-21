@@ -35,7 +35,6 @@ import {
   TableCaption,
 } from "@/components/ui/table"
 import { blockUser } from "@/app/lib/actions/users";
-import { router } from "better-auth/api";
 import { useRouter } from "next/navigation";
 
 export type TableUser = Pick<
@@ -63,9 +62,7 @@ export default function UsersTable({ users }: { users: TableUser[] }) {
         user.email.toLowerCase().includes(query))
   )
   const handleBlockUser = async (id: string) => {
-    console.log(id)
-    const blockResult = await blockUser(id)
-    console.log(blockResult)
+    await blockUser(id)
     router.refresh()
   }
   return (

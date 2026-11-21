@@ -55,8 +55,7 @@ const Navbar = () => {
     ]
 
     const handleSignOut = async () => {
-        const { data, error } = await authClient.signOut()
-        console.log("Sign-out successful", { data, error })
+        const { error } = await authClient.signOut()
         toast.add({
             title: error ? "Sign-out failed" : "Sign-out successful",
             description: error ? error.message : "You have successfully signed out.",
