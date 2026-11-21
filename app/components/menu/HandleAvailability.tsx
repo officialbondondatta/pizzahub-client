@@ -33,6 +33,7 @@ const HandleAvailability = ({ item }: { item: IMenuItem }) => {
             }
             const res = await changeAvailability(id, data)
             if (res.modifiedCount > 0) {
+                router.refresh()
                 toast.add({
                     title: "Successful",
                     description: "Item availablity changed"

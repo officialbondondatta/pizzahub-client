@@ -73,7 +73,7 @@ export default function AddMenuItems() {
                 price: Number(formData.get("price")),
                 status: initialStatus,
                 isActive: false,
-                userId: user.id,
+                vendorId: user.id,
                 image: imageURL,
             }
             const res = await addMenuItems(itemDetails)

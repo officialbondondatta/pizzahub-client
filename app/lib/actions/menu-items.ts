@@ -44,8 +44,8 @@ export const getActiveItemsCount = async () => {
   const session = await getSessionNow()
   if (!session) throw new Error("Sign in to view your menu items")
   const token = session.session.token
-  const id = session.user.id
-  const result = await fetch(`${BASEURL}/menu-items/active-items/${id}`, {
+  const vendorId = session.user.id
+  const result = await fetch(`${BASEURL}/menu-items/active-items/${vendorId}`, {
     headers: {
       authorization: `Bearer ${token}`
     }
@@ -57,8 +57,9 @@ export const getMenuItemsByID = async (): Promise<IMenuItem[]> => {
   const session = await getSessionNow()
   if (!session) throw new Error("Sign in to view your menu items")
   const token = session.session.token
-  const userId = session.user.id
-  const res = await fetch(`${BASEURL}/menu-items/${userId}`, {
+  const vendorId = session.user.id
+  const res = await fetch(`${BASEURL}/menu-items/${vendorId}`, {
+    cache: "no-store",
     headers: {
       authorization: `Bearer ${token}`,
     },
@@ -135,6 +136,7 @@ export const changeAvailability = async (id: string, data: IAvailability) => {
       "Content-Type": "application/json",
       authorization: `Bearer ${token}`
     },
+    cache: "no-cache",
     body: JSON.stringify(data)
   })
   return res.json()
