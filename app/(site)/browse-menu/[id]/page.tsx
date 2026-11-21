@@ -6,7 +6,7 @@ import { MapPin } from "lucide-react"
 import { getSingleItemDetails } from "@/app/lib/actions/menu-items"
 import { withVendorBusinessNames } from "@/app/lib/vendor-business-names"
 import VendorPlaceholder from "@/app/components/menu/VendorPlaceholder"
-import OrderNowButton from "@/app/components/orders/OrderNowButton";
+import OrderNowButton from "@/app/components/orders/OrderNowButton"
 
 export default async function MenuItemDetailsPage({
   params,
@@ -63,7 +63,7 @@ export default async function MenuItemDetailsPage({
           </div>
           <VendorPlaceholder businessName={vendorItem.vendorBusinessName} />
           <div className="mt-auto border-t pt-6">
-            <OrderNowButton item={item}></OrderNowButton>
+            <OrderNowButton item={vendorItem}></OrderNowButton>
           </div>
         </CardContent>
       </Card>
