@@ -68,6 +68,13 @@ export default function AdminMenuTable({ items }: { items: IMenuItem[] }) {
       isActive: currentData
     }
     const result = await changeAvailability(id, updateData)
+    if (result.message) {
+      toast.add({
+        title: `Item availability can not be changed!`,
+        description: result.message
+      })
+      router.refresh()
+    }
     if (result.modifiedCount > 0) {
       toast.add({
         title: `Item is ${value} now !`,
