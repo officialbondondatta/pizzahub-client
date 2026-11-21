@@ -30,7 +30,7 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select"
-import { changeStatus, type IStatus } from "@/app/lib/actions/menu-items"
+import { changeAvailability, changeStatus, type IStatus } from "@/app/lib/actions/menu-items"
 import { useRouter } from "next/navigation";
 import { toast } from "@/components/ui/toast";
 
@@ -46,13 +46,32 @@ const statusStyles = {
 export default function AdminMenuTable({ items }: { items: IMenuItem[] }) {
   const router = useRouter()
   const handleStatusChange = async (id: string, value: IStatus) => {
-    console.log(id, value)
     const result = await changeStatus(id, value)
-    console.log(result)
     if (result.modifiedCount > 0) {
       toast.add({
         title: `Item is ${value.status}`,
         description: " Item status changed successfully"
+      })
+      router.refresh()
+    }
+  }
+  const handleChangeAvailability = async (id: string, value: string) => {
+    console.log(value)
+    let currentData = false
+    if (value === "Active") {
+      currentData = true
+    }
+    if (value === "Inactive") {
+      currentData = false
+    }
+    const updateData = {
+      isActive: currentData
+    }
+    const result = await changeAvailability(id, updateData)
+    if (result.modifiedCount > 0) {
+      toast.add({
+        title: `Item is ${value} now !`,
+        description: " Item availability changed successfully"
       })
       router.refresh()
     }
@@ -152,13 +171,7 @@ export default function AdminMenuTable({ items }: { items: IMenuItem[] }) {
                 <Select
                   value={item.isActive ? "Active" : "Inactive"}
                   disabled={!item._id}
-                  onValueChange={(value) => {
-                    if (value)
-                      console.log("Change availability", {
-                        itemId: item._id,
-                        isActive: value === "Active",
-                      })
-                  }}
+                  onValueChange={(value) => handleChangeAvailability(item?._id as string, value as string)}
                 >
                   <SelectTrigger
                     aria-label={`Availability for ${item.name}`}
