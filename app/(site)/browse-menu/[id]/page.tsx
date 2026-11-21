@@ -2,11 +2,11 @@ import { Card, CardContent } from "@/components/ui/card"
 import Image from "next/image"
 import Link from "next/link"
 import { notFound } from "next/navigation"
-import { MapPin, ShoppingBag } from "lucide-react"
+import { MapPin } from "lucide-react"
 import { getSingleItemDetails } from "@/app/lib/actions/menu-items"
 import { withVendorBusinessNames } from "@/app/lib/vendor-business-names"
 import VendorPlaceholder from "@/app/components/menu/VendorPlaceholder"
-import { Button } from "@/components/ui/button"
+import OrderNowButton from "@/app/components/orders/OrderNowButton";
 
 export default async function MenuItemDetailsPage({
   params,
@@ -33,6 +33,7 @@ export default async function MenuItemDetailsPage({
             src={item.image}
             alt={item.name}
             fill
+            loading="eager"
             unoptimized
             sizes="(max-width: 1024px) 100vw, 50vw"
             className="object-cover"
@@ -62,13 +63,7 @@ export default async function MenuItemDetailsPage({
           </div>
           <VendorPlaceholder businessName={vendorItem.vendorBusinessName} />
           <div className="mt-auto border-t pt-6">
-            <Button disabled className="h-12 w-full">
-              <ShoppingBag />
-              Order now
-            </Button>
-            <p className="mt-3 text-center text-sm text-muted-foreground">
-              Online ordering is coming soon.
-            </p>
+            <OrderNowButton item={item}></OrderNowButton>
           </div>
         </CardContent>
       </Card>
