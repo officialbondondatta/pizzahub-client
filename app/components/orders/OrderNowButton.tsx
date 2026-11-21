@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/dialog"
 import { ShoppingBag } from "lucide-react"
 import { toast } from "@/components/ui/toast"
+import { createOrder } from "@/app/lib/actions/order";
 
 export default function OrderNowButton({ item }: { item: IMenuItem }) {
     const [open, setOpen] = useState(false)
@@ -32,7 +33,7 @@ export default function OrderNowButton({ item }: { item: IMenuItem }) {
         })
         return
     }
-    function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    async function handleSubmit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault()
         const form = event.currentTarget
         const formData = new FormData(form)
@@ -47,7 +48,13 @@ export default function OrderNowButton({ item }: { item: IMenuItem }) {
             additionalMessage: String(formData.get("additionalMessage") || "").trim(),
             status: "Pending",
         }
-        console.log("Order form", order)
+        const result = await createOrder(order)
+        if (result.message) {
+            toast.add({
+                title: result.message,
+                description: "Kindly try again after sometime"
+            })
+        }
         setOpen(false)
     }
 
