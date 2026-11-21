@@ -1,10 +1,12 @@
+import { Suspense } from "react"
+import AccessToast from "@/app/components/shared/AccessToast"
 import type { Metadata } from "next"
 import { Geist, Geist_Mono } from "next/font/google"
 
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
-import { cn } from "@/lib/utils";
-import { Toaster } from "@/components/ui/toast";
+import { cn } from "@/lib/utils"
+import { Toaster } from "@/components/ui/toast"
 
 export const metadata: Metadata = {
   title: {
@@ -15,7 +17,7 @@ export const metadata: Metadata = {
     "Discover your next favorite pizza with PizzaHub. Explore local kitchens, connect with vendors, and share great food with even better company.",
 }
 
-const geist = Geist({ subsets: ['latin'], variable: '--font-sans' })
+const geist = Geist({ subsets: ["latin"], variable: "--font-sans" })
 
 const fontMono = Geist_Mono({
   subsets: ["latin"],
@@ -31,10 +33,18 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={cn("antialiased", fontMono.variable, "font-sans", geist.variable)}
+      className={cn(
+        "antialiased",
+        fontMono.variable,
+        "font-sans",
+        geist.variable
+      )}
     >
       <body>
         <Toaster position="top-right" />
+        <Suspense fallback={null}>
+          <AccessToast />
+        </Suspense>
         <ThemeProvider>{children}</ThemeProvider>
       </body>
     </html>
