@@ -1,3 +1,4 @@
+import { withVendorBusinessNames } from "@/app/lib/vendor-business-names"
 import { getAllMenuItems } from "@/app/lib/actions/menu-items"
 import BrowseMenu from "@/app/components/menu/BrowseMenu"
 import MenuBanner from "@/app/components/menu/MenuBanner"
@@ -10,7 +11,7 @@ export default async function BrowseMenuPage() {
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-12">
       <MenuBanner />
-      <BrowseMenu items={activeItems} />
+      <BrowseMenu items={await withVendorBusinessNames(activeItems)} />
     </div>
   )
 }

@@ -49,7 +49,7 @@ export default function MenuCard({ item }: { item: IMenuItem }) {
           </p>
         </div>
         <div className="mt-auto">
-          <VendorPlaceholder />
+          <VendorPlaceholder businessName={item.vendorBusinessName} />
         </div>
         {item._id ? (
           <Button

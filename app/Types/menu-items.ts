@@ -7,6 +7,7 @@ export interface IMenuItem {
     location: string
     image: string
     vendorId: string
+    vendorBusinessName?: string
     isActive: boolean
     status: "pending" | "accepted" | "rejected"
 }

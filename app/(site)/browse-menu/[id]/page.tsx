@@ -4,7 +4,7 @@ import Link from "next/link"
 import { notFound } from "next/navigation"
 import { MapPin, ShoppingBag } from "lucide-react"
 import { getSingleItemDetails } from "@/app/lib/actions/menu-items"
-import { getSessionNow } from "@/app/lib/core/server"
+import { withVendorBusinessNames } from "@/app/lib/vendor-business-names"
 import VendorPlaceholder from "@/app/components/menu/VendorPlaceholder"
 import { Button } from "@/components/ui/button"
 
@@ -16,6 +16,8 @@ export default async function MenuItemDetailsPage({
   const { id } = await params
   const item = await getSingleItemDetails(id)
   if (!item) notFound()
+
+  const [vendorItem] = await withVendorBusinessNames([item])
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6">
@@ -58,7 +60,7 @@ export default async function MenuItemDetailsPage({
               {item.description}
             </p>
           </div>
-          <VendorPlaceholder />
+          <VendorPlaceholder businessName={vendorItem.vendorBusinessName} />
           <div className="mt-auto border-t pt-6">
             <Button disabled className="h-12 w-full">
               <ShoppingBag />
