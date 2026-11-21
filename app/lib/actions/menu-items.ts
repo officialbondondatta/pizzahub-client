@@ -141,3 +141,25 @@ export const changeAvailability = async (id: string, data: IAvailability) => {
   })
   return res.json()
 }
+
+export interface IStatus {
+  status: "pending" | "accepted" | "rejected"
+}
+
+export const changeStatus = async (id: string, data: IStatus) => {
+  const session = await getSessionNow()
+  if (!session) throw new Error("Sign in to view your menu items")
+  const token = session.session.token
+
+  const res = await fetch(`${BASEURL}/menu-items/status/${id}`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+      authorization: `Bearer ${token}`
+    },
+    cache: "no-cache",
+    body: JSON.stringify(data)
+  })
+  return res.json()
+}
+

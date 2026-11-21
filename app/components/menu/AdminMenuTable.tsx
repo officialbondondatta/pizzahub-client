@@ -30,6 +30,9 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select"
+import { changeStatus, type IStatus } from "@/app/lib/actions/menu-items"
+import { useRouter } from "next/navigation";
+import { toast } from "@/components/ui/toast";
 
 const statusStyles = {
   pending:
@@ -41,6 +44,19 @@ const statusStyles = {
 }
 
 export default function AdminMenuTable({ items }: { items: IMenuItem[] }) {
+  const router = useRouter()
+  const handleStatusChange = async (id: string, value: IStatus) => {
+    console.log(id, value)
+    const result = await changeStatus(id, value)
+    console.log(result)
+    if (result.modifiedCount > 0) {
+      toast.add({
+        title: `Item is ${value.status}`,
+        description: " Item status changed successfully"
+      })
+      router.refresh()
+    }
+  }
   return (
     <div
       className="overflow-hidden rounded-2xl border border-brand-300 bg-card shadow-lg shadow-brand-900/5 dark:border-brand-800"
@@ -185,7 +201,7 @@ export default function AdminMenuTable({ items }: { items: IMenuItem[] }) {
                         unoptimized
                         className="h-56 w-full rounded-xl object-cover"
                       />
-                      <p className="break-words whitespace-pre-wrap text-muted-foreground">
+                      <p className="wrap-break-word whitespace-pre-wrap text-muted-foreground">
                         {item.description}
                       </p>
                       <dl className="grid grid-cols-2 gap-4 text-sm">
@@ -202,7 +218,7 @@ export default function AdminMenuTable({ items }: { items: IMenuItem[] }) {
                         ].map(([label, value]) => (
                           <div key={label}>
                             <dt className="text-muted-foreground">{label}</dt>
-                            <dd className="mt-1 font-medium break-words capitalize">
+                            <dd className="mt-1 font-medium wrap-break-word capitalize">
                               {value}
                             </dd>
                           </div>
@@ -215,11 +231,14 @@ export default function AdminMenuTable({ items }: { items: IMenuItem[] }) {
                     value={item.status}
                     disabled={!item._id}
                     onValueChange={(value) => {
-                      if (value)
-                        console.log("Change menu item status", {
-                          itemId: item._id,
-                          status: value,
-                        })
+                      if (
+                        item._id &&
+                        (value === "pending" ||
+                          value === "accepted" ||
+                          value === "rejected")
+                      ) {
+                        handleStatusChange(item._id, { status: value })
+                      }
                     }}
                   >
                     <SelectTrigger
