@@ -31,13 +31,13 @@ function formatDate(value?: string) {
   return Number.isNaN(date.getTime())
     ? "—"
     : new Intl.DateTimeFormat("en-GB", {
-      dateStyle: "medium",
-      timeZone: "Asia/Dhaka",
-    }).format(date)
+        dateStyle: "medium",
+        timeZone: "Asia/Dhaka",
+      }).format(date)
 }
 export interface ITransactionTableProps {
   transactions: ITransaction[]
-  users: Pick<IUser, "_id" | "name" | "email" | "image">[]
+  users: Pick<IUser, "_id" | "name" | "email" | "image" | "businessName">[]
 }
 
 export default function TransactionsTable({
@@ -95,6 +95,9 @@ export default function TransactionsTable({
                       <p className="font-semibold">
                         {vendor?.name || "Unknown vendor"}
                       </p>
+                      <p className="mt-1 max-w-52 text-xs font-normal wrap-break-word whitespace-normal text-muted-foreground">
+                        Business: {vendor?.businessName || "Not provided"}
+                      </p>
                       <p className="mt-1 max-w-52 text-xs font-normal break-all whitespace-normal text-muted-foreground">
                         {vendor?.email || "Email not available"}
                       </p>
@@ -149,6 +152,9 @@ export default function TransactionsTable({
                         <div className="min-w-0">
                           <p className="font-semibold wrap-break-word">
                             {vendor?.name || "Unknown vendor"}
+                          </p>
+                          <p className="mt-1 wrap-break-word text-muted-foreground">
+                            Business: {vendor?.businessName || "Not provided"}
                           </p>
                           <p className="mt-1 break-all text-muted-foreground">
                             {vendor?.email || "Email not available"}

@@ -38,11 +38,12 @@ export default async function TransactionsPage() {
       </section>
       <TransactionsTable
         transactions={transactions}
-        users={users.map(({ _id, name, email, image }) => ({
+        users={users.map(({ _id, name, email, image, businessName }) => ({
           _id,
           name,
           email,
           image,
+          businessName,
         }))}
       />
     </div>
