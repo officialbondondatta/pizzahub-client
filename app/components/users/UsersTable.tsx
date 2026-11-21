@@ -34,6 +34,9 @@ import {
   TableCell,
   TableCaption,
 } from "@/components/ui/table"
+import { blockUser } from "@/app/lib/actions/users";
+import { router } from "better-auth/api";
+import { useRouter } from "next/navigation";
 
 export type TableUser = Pick<
   IUser,
@@ -51,6 +54,7 @@ export type TableUser = Pick<
 export default function UsersTable({ users }: { users: TableUser[] }) {
   const [search, setSearch] = useState("")
   const [role, setRole] = useState("all")
+  const router = useRouter()
   const query = search.trim().toLowerCase()
   const filteredUsers = users.filter(
     (user) =>
@@ -58,6 +62,12 @@ export default function UsersTable({ users }: { users: TableUser[] }) {
       (user.name.toLowerCase().includes(query) ||
         user.email.toLowerCase().includes(query))
   )
+  const handleBlockUser = async (id: string) => {
+    console.log(id)
+    const blockResult = await blockUser(id)
+    console.log(blockResult)
+    router.refresh()
+  }
   return (
     <section className="space-y-4" aria-label="User directory">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end">
@@ -246,10 +256,8 @@ export default function UsersTable({ users }: { users: TableUser[] }) {
                             />
                           }
                           onClick={() =>
-                            console.log(
-                              user.isBlocked ? "Unblock user" : "Block user",
-                              { userId: user._id }
-                            )
+                            handleBlockUser(user?._id as string)
+
                           }
                         >
                           {user.isBlocked ? "Unblock" : "Block"}

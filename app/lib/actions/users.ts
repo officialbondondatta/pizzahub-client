@@ -1,3 +1,4 @@
+'use server'
 import { IUser } from "@/app/Types/user";
 import { getTokenNow } from "../core/server";
 
@@ -23,5 +24,19 @@ export const getUsers = async () => {
             authorization: `Bearer ${token}`
         }
     })
+    return result.json()
+}
+export const blockUser = async (id: string) => {
+    const token = await getTokenNow()
+    const result = await fetch(`${BASEURL}/users/block/${id}`, {
+        method: "PATCH",
+        headers: {
+            authorization: `Bearer ${token}`
+        },
+        cache: 'no-cache'
+    })
+    if (!result.ok) {
+        throw new Error("Failed to block user")
+    }
     return result.json()
 }
