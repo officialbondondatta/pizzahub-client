@@ -10,7 +10,6 @@ import { useSession } from "@/app/lib/auth-client";
 import { toast } from "@/components/ui/toast";
 import { addMenuItems } from "@/app/lib/actions/menu-items";
 import { IMenuItem } from "@/app/Types/menu-items";
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 
 type ItemStatus = "pending" | "accepted" | "rejected"
 const initialStatus: ItemStatus = "pending"
@@ -23,7 +22,6 @@ export default function AddMenuItems() {
     const [uploading, setUplaoding] = useState(false)
     const [imagePreview, setImagePreview] = useState<string | null>(null)
     const [loading, setLoading] = useState(false)
-    const [isActive, setIsActive] = useState(false)
     useEffect(() => {
         return () => {
             if (imagePreview) URL.revokeObjectURL(imagePreview)
@@ -74,7 +72,7 @@ export default function AddMenuItems() {
                 location: String(formData.get("location") ?? ""),
                 price: Number(formData.get("price")),
                 status: initialStatus,
-                isActive,
+                isActive: false,
                 userId: user.id,
                 image: imageURL,
             }
@@ -83,7 +81,6 @@ export default function AddMenuItems() {
                 setUplaoding(false)
                 setLoading(false)
                 form.reset()
-                setIsActive(false)
                 setImagePreview(null)
                 toast.add({
                     title: "Item added successfully",
@@ -273,19 +270,16 @@ export default function AddMenuItems() {
                     </div>
                     <div className="space-y-2">
                         <Label htmlFor="is-active">Availability</Label>
-                        <Select
-                            name="isActive"
-                            value={isActive ? "true" : "false"}
-                            onValueChange={(value) => setIsActive(value === "true")}
-                        >
-                            <SelectTrigger id="is-active" className="w-full bg-background data-[size=default]:h-11">
-                                <SelectValue>{isActive ? "Active" : "Inactive"}</SelectValue>
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="false">Inactive</SelectItem>
-                                <SelectItem value="true">Active</SelectItem>
-                            </SelectContent>
-                        </Select>
+                        <Input
+                            id="is-active"
+                            value="Inactive"
+                            disabled
+                            aria-describedby="availability-help"
+                            className={`${inputClass} bg-muted text-muted-foreground`}
+                        />
+                        <p id="availability-help" className="text-xs text-muted-foreground">
+                            New items are always added as inactive.
+                        </p>
                     </div>
                     <div className="border-t pt-5">
                         <Button

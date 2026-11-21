@@ -31,12 +31,26 @@ export const addMenuItems = async (data: IMenuItem) => {
       "Content-Type": "application/json",
       authorization: `Bearer ${token}`,
     },
-    body: JSON.stringify(data),
+    body: JSON.stringify({ ...data, isActive: false }),
   })
   if (!res.ok) {
     throw new Error("Failed to add menu item")
   }
   return res.json()
+}
+
+
+export const getActiveItemsCount = async () => {
+  const session = await getSessionNow()
+  if (!session) throw new Error("Sign in to view your menu items")
+  const token = session.session.token
+  const id = session.user.id
+  const result = await fetch(`${BASEURL}/menu-items/active-items/${id}`, {
+    headers: {
+      authorization: `Bearer ${token}`
+    }
+  })
+  return result.json()
 }
 
 export const getMenuItemsByID = async (): Promise<IMenuItem[]> => {

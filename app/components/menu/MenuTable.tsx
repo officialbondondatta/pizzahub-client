@@ -33,10 +33,10 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select"
-import { changeAvailability, deleteMenuItem } from "@/app/lib/actions/menu-items";
+import { changeAvailability, deleteMenuItem, getActiveItemsCount } from "@/app/lib/actions/menu-items";
 import { toast } from "@/components/ui/toast";
-import { router } from "better-auth/api";
 import { useRouter } from "next/navigation";
+import { useSession } from "@/app/lib/auth-client";
 
 const statusStyles = {
   pending:
@@ -48,6 +48,8 @@ const statusStyles = {
 }
 
 export default function MenuTable({ items }: { items: IMenuItem[] }) {
+  const { data: session } = useSession()
+  const userPlan = session?.user?.plan || "free"
   const router = useRouter()
   const handleDeleteItem = async (id: string) => {
     if (!id) {
@@ -65,22 +67,41 @@ export default function MenuTable({ items }: { items: IMenuItem[] }) {
       router.refresh()
     }
   }
-  const handleAvailablity = async (id: string, value: string) => {
-    const data = {
-      isActive: true
+  const handleAvailablity = async (id: string, value: string, status: string) => {
+    if (status === 'accepted') {
+      if (value === "Active" && userPlan === "free") {
+        const activeItems = await getActiveItemsCount()
+        if (activeItems >= 3) {
+          toast.add({
+            title: "Subscribe to Pizzahub Premium to active more items"
+          })
+          router.push('/dashboard/vendor/subscription')
+          return
+        }
+      }
+      const data = {
+        isActive: true
+      }
+      if (value === "Active") {
+        data.isActive = true
+      }
+      if (value === "Inactive") {
+        data.isActive = false
+      }
+      const res = await changeAvailability(id, data)
+      if (res.modifiedCount > 0) {
+        toast.add({
+          title: "Successful",
+          description: "Item availablity changed"
+        })
+      }
     }
-    if (value === "Active") {
-      data.isActive = true
-    }
-    if (value === "Inactive") {
-      data.isActive = false
-    }
-    const res = await changeAvailability(id, data)
-    if (res.modifiedCount > 0) {
+    else {
       toast.add({
-        title: "Successful",
-        description: "Item availablity changed"
+        title: `Item is ${status}`,
+        description: "Availability change unsuccessful"
       })
+      return
     }
   }
   return (
@@ -173,7 +194,7 @@ export default function MenuTable({ items }: { items: IMenuItem[] }) {
               <TableCell className="px-5 py-4">
                 <Select
                   defaultValue={item.isActive ? "Active" : "Inactive"}
-                  onValueChange={(value) => handleAvailablity(item._id as string, value as string)
+                  onValueChange={(value) => handleAvailablity(item._id as string, value as string, item.status)
                   }
                 >
                   <SelectTrigger
