@@ -4,6 +4,8 @@ import { useState } from "react"
 import { LoaderCircle, ShoppingBag, UserRound } from "lucide-react"
 import { authClient } from "@/app/lib/auth-client"
 import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 import {
   Dialog,
   DialogContent,
@@ -18,16 +20,24 @@ export function GoogleRoleDialog() {
   const [role, setRole] = useState<"customer" | "vendor">("customer")
   const [pending, setPending] = useState(false)
   const [error, setError] = useState("")
+  const [businessName, setBusinessName] = useState("")
 
   async function continueWithGoogle() {
     if (pending) return
+    if (role === "vendor" && !businessName.trim()) {
+      setError("Business name is required for vendors.")
+      return
+    }
     setPending(true)
     setError("")
     try {
       const result = await authClient.signIn.social({
         provider: "google",
         callbackURL: "/",
-        additionalData: { role },
+        additionalData: {
+          role,
+          ...(role === "vendor" ? { businessName: businessName.trim() } : {}),
+        },
       })
       if (result.error) {
         setError(
@@ -112,6 +122,20 @@ export function GoogleRoleDialog() {
             </label>
           ))}
         </fieldset>
+        {role === "vendor" && (
+          <div className="space-y-2">
+            <Label htmlFor="google-business-name">Business name</Label>
+            <Input
+              id="google-business-name"
+              autoComplete="organization"
+              placeholder="Your business name"
+              value={businessName}
+              onChange={(event) => setBusinessName(event.target.value)}
+              disabled={pending}
+              required
+            />
+          </div>
+        )}
         <p className="text-xs text-muted-foreground">
           Already have an account? You’ll sign in with your existing account
           type.

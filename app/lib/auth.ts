@@ -1,5 +1,5 @@
 import { betterAuth } from "better-auth";
-import { getOAuthState } from "better-auth/api";
+import { APIError, getOAuthState } from "better-auth/api";
 import { MongoClient } from "mongodb";
 import { mongodbAdapter } from "@better-auth/mongo-adapter";
 
@@ -27,6 +27,36 @@ export const auth = betterAuth({
                 defaultValue: "free",
                 input: true,
             },
+            isBlocked: {
+                type: "boolean",
+                required: true,
+                defaultValue: false,
+                input: false,
+            },
+            businessName: {
+                type: "string",
+                // Required conditionally for vendors by the creation hook below.
+                required: false,
+                input: true,
+            },
+        },
+    },
+    databaseHooks: {
+        user: {
+            create: {
+                before: async (user) => {
+                    if (user.role !== "vendor") return;
+                    const businessName = typeof user.businessName === "string"
+                        ? user.businessName.trim()
+                        : "";
+                    if (!businessName) {
+                        throw new APIError("BAD_REQUEST", {
+                            message: "Business name is required for vendors.",
+                        });
+                    }
+                    return { data: { ...user, businessName } };
+                },
+            },
         },
     },
     socialProviders: {
@@ -36,7 +66,9 @@ export const auth = betterAuth({
             mapProfileToUser: async () => {
                 const state = await getOAuthState();
                 // Only the two self-service roles are accepted from OAuth state.
-                return { role: state?.role === "vendor" ? "vendor" : "customer" };
+                return state?.role === "vendor"
+                    ? { role: "vendor", businessName: typeof state.businessName === "string" ? state.businessName.trim() : "" }
+                    : { role: "customer" };
             },
         },
     },

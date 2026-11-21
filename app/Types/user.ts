@@ -7,4 +7,7 @@ export interface IUser {
   plan: "free" | "premium"
   role: "customer" | "vendor" | "admin"
   image?: string
+  isBlocked: boolean
+  businessName?: string
+  subscriptionExpiresAt?: string
 }

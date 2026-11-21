@@ -48,12 +48,16 @@ export default function SignUpPage() {
             email: formData.get("email") as string,
             password: formData.get("password") as string,
             plan: "free",
+            isBlocked: false,
             role: role === "vendor" ? "vendor" : "customer",
             image: String(formData.get("image") ?? "").trim(),
         }
 
         const { data, error } = await authClient.signUp.email({
             ...signUpData,
+            ...(role === "vendor"
+                ? { businessName: String(formData.get("businessName") ?? "").trim() }
+                : {}),
             callbackURL: "/",
         });
         if (data?.token) {
@@ -168,6 +172,19 @@ export default function SignUpPage() {
                                 className={inputClass}
                             />
                         </div>
+                        {role === "vendor" && (
+                            <div className="space-y-2">
+                                <Label htmlFor="businessName">Business name</Label>
+                                <Input
+                                    id="businessName"
+                                    name="businessName"
+                                    autoComplete="organization"
+                                    placeholder="Your business name"
+                                    required
+                                    className={inputClass}
+                                />
+                            </div>
+                        )}
                         <div className="space-y-2">
                             <Label htmlFor="email">Email address</Label>
                             <Input
