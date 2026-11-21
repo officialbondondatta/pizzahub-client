@@ -2,9 +2,12 @@ import Image from "next/image"
 import { getAllTransactions } from "@/app/lib/actions/payment"
 import type { ITransaction } from "@/app/Types/transactions"
 import TransactionsTable from "@/app/components/transactions/TransactionsTable"
+import { getUsers } from "@/app/lib/actions/users"
+import { IUser } from "@/app/Types/user"
 
 export default async function TransactionsPage() {
   const transactions: ITransaction[] = await getAllTransactions()
+  const users: IUser[] = await getUsers()
   return (
     <div className="mx-auto max-w-7xl space-y-8">
       <section className="grid overflow-hidden rounded-2xl border border-brand-300 bg-brand-100/50 md:grid-cols-[1fr_360px] dark:border-brand-800 dark:bg-brand-900/20">
@@ -33,7 +36,15 @@ export default async function TransactionsPage() {
           />
         </div>
       </section>
-      <TransactionsTable transactions={transactions} />
+      <TransactionsTable
+        transactions={transactions}
+        users={users.map(({ _id, name, email, image }) => ({
+          _id,
+          name,
+          email,
+          image,
+        }))}
+      />
     </div>
   )
 }
