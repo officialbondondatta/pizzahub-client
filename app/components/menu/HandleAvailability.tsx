@@ -49,7 +49,7 @@ const HandleAvailability = ({ item }: { item: IMenuItem }) => {
     }
     return (
         <Select
-            defaultValue={item.isActive ? "Active" : "Inactive"}
+            value={item.isActive ? "Active" : "Inactive"}
             onValueChange={(value) => handleAvailablity(item._id as string, value as string, item.status)
             }
         >
