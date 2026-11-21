@@ -1,5 +1,4 @@
 "use client"
-
 import Image from "next/image"
 import Link from "next/link"
 import { Eye, Trash2, MapPin, Clock3, CircleCheck, CircleX } from "lucide-react"
@@ -26,17 +25,10 @@ import {
   DialogFooter,
   DialogClose,
 } from "@/components/ui/dialog"
-import {
-  Select,
-  SelectTrigger,
-  SelectValue,
-  SelectContent,
-  SelectItem,
-} from "@/components/ui/select"
-import { changeAvailability, deleteMenuItem, getActiveItemsCount } from "@/app/lib/actions/menu-items";
+import { deleteMenuItem } from "@/app/lib/actions/menu-items";
 import { toast } from "@/components/ui/toast";
 import { useRouter } from "next/navigation";
-import { useSession } from "@/app/lib/auth-client";
+import HandleAvailability from "./HandleAvailability";
 
 const statusStyles = {
   pending:
@@ -48,8 +40,6 @@ const statusStyles = {
 }
 
 export default function MenuTable({ items }: { items: IMenuItem[] }) {
-  const { data: session } = useSession()
-  const userPlan = session?.user?.plan || "free"
   const router = useRouter()
   const handleDeleteItem = async (id: string) => {
     if (!id) {
@@ -67,43 +57,7 @@ export default function MenuTable({ items }: { items: IMenuItem[] }) {
       router.refresh()
     }
   }
-  const handleAvailablity = async (id: string, value: string, status: string) => {
-    if (status === 'accepted') {
-      if (value === "Active" && userPlan === "free") {
-        const activeItems = await getActiveItemsCount()
-        if (activeItems >= 3) {
-          toast.add({
-            title: "Subscribe to Pizzahub Premium to active more items"
-          })
-          router.push('/dashboard/vendor/subscription')
-          return
-        }
-      }
-      const data = {
-        isActive: true
-      }
-      if (value === "Active") {
-        data.isActive = true
-      }
-      if (value === "Inactive") {
-        data.isActive = false
-      }
-      const res = await changeAvailability(id, data)
-      if (res.modifiedCount > 0) {
-        toast.add({
-          title: "Successful",
-          description: "Item availablity changed"
-        })
-      }
-    }
-    else {
-      toast.add({
-        title: `Item is ${status}`,
-        description: "Availability change unsuccessful"
-      })
-      return
-    }
-  }
+
   return (
     <div
       className="overflow-hidden rounded-2xl border border-brand-300 bg-card shadow-lg shadow-brand-900/5 dark:border-brand-800"
@@ -192,22 +146,7 @@ export default function MenuTable({ items }: { items: IMenuItem[] }) {
                 </Badge>
               </TableCell>
               <TableCell className="px-5 py-4">
-                <Select
-                  defaultValue={item.isActive ? "Active" : "Inactive"}
-                  onValueChange={(value) => handleAvailablity(item._id as string, value as string, item.status)
-                  }
-                >
-                  <SelectTrigger
-                    aria-label={`Availability for ${item.name}`}
-                    className="min-w-28 bg-background data-[size=default]:h-10"
-                  >
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="Active">Active</SelectItem>
-                    <SelectItem value="Inactive">Inactive</SelectItem>
-                  </SelectContent>
-                </Select>
+                <HandleAvailability item={item}></HandleAvailability>
               </TableCell>
               <TableCell className="px-5 py-4">
                 <div className="flex items-center gap-2">
