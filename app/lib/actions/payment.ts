@@ -18,3 +18,14 @@ export const checkoutVerify = async (sessionId: string) => {
     }
     return res.json()
 }
+
+export const getAllTransactions = async () => {
+    const token = await getTokenNow()
+    const res = await fetch(`${BASEURL}/transactions`, {
+        headers: {
+            authorization: `Bearer ${token}`
+        },
+        cache: "no-cache"
+    })
+    return res.json()
+}
