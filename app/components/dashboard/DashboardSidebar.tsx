@@ -1,126 +1,136 @@
 import Link from "next/link"
 import BrandLogo from "@/app/components/shared/BrandLogo"
 import DashboardNavLink from "./DashboardNavLink"
+import DashboardSignOut from "./DashboardSignOut"
 import {
-    type LucideIcon,
-    ShoppingBag,
-    Gauge,
-    DollarSignIcon,
-    User,
-    User2Icon,
-    Menu,
-    Plus,
-    ListOrderedIcon,
-    SubscriptIcon,
+  type LucideIcon,
+  ShoppingBag,
+  Gauge,
+  DollarSignIcon,
+  User,
+  User2Icon,
+  Menu,
+  Plus,
+  ListOrderedIcon,
+  SubscriptIcon,
 } from "lucide-react"
 import { auth } from "@/app/lib/auth"
 import {
-    Sidebar,
-    SidebarContent,
-    SidebarFooter,
-    SidebarGroup,
-    SidebarHeader,
-    SidebarMenu,
-    SidebarMenuItem,
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuItem,
 } from "@/components/ui/sidebar"
 import { headers } from "next/headers"
 
 type SidebarItem = { title: string; url: string; icon: LucideIcon }
 
 const itemsDescriptions = {
-    customer: [
-        { title: "Overview", url: "/dashboard/customer", icon: Gauge },
-        {
-            title: "My Orders",
-            url: "/dashboard/customer/my-orders",
-            icon: ShoppingBag,
-        },
-        { title: "Profile Settings", url: "/profile", icon: User },
-    ],
-    admin: [
-        { title: "Overview", url: "/dashboard/admin", icon: Gauge },
-        {
-            title: "Manage Users",
-            url: "/dashboard/admin/manage-users",
-            icon: User2Icon,
-        },
-        {
-            title: "Manage Menu Items",
-            url: "/dashboard/admin/manage-menu-items",
-            icon: Menu,
-        },
-        {
-            title: "Transactions",
-            url: "/dashboard/admin/transactions",
-            icon: DollarSignIcon,
-        },
-        { title: "Profile", url: "/profile", icon: User },
-    ],
-    vendor: [
-        { title: "Overview", url: "/dashboard/vendor", icon: Gauge },
-        {
-            title: "My Menu Items",
-            url: "/dashboard/vendor/my-menu-items",
-            icon: Menu,
-        },
-        {
-            title: "Add Menu Items",
-            url: "/dashboard/vendor/add-menu-items",
-            icon: Plus,
-        },
-        {
-            title: "Customer Orders",
-            url: "/dashboard/vendor/customer-orders",
-            icon: ListOrderedIcon,
-        },
-        {
-            title: "Subscription",
-            url: "/dashboard/vendor/subscription",
-            icon: SubscriptIcon,
-        },
-        { title: "Profile Settings", url: "/profile", icon: User },
-    ],
+  customer: [
+    { title: "Overview", url: "/dashboard/customer", icon: Gauge },
+    {
+      title: "My Orders",
+      url: "/dashboard/customer/my-orders",
+      icon: ShoppingBag,
+    },
+  ],
+  admin: [
+    { title: "Overview", url: "/dashboard/admin", icon: Gauge },
+    {
+      title: "Manage Users",
+      url: "/dashboard/admin/manage-users",
+      icon: User2Icon,
+    },
+    {
+      title: "Manage Menu Items",
+      url: "/dashboard/admin/manage-menu-items",
+      icon: Menu,
+    },
+    {
+      title: "Transactions",
+      url: "/dashboard/admin/transactions",
+      icon: DollarSignIcon,
+    },
+  ],
+  vendor: [
+    { title: "Overview", url: "/dashboard/vendor", icon: Gauge },
+    {
+      title: "My Menu Items",
+      url: "/dashboard/vendor/my-menu-items",
+      icon: Menu,
+    },
+    {
+      title: "Add Menu Items",
+      url: "/dashboard/vendor/add-menu-items",
+      icon: Plus,
+    },
+    {
+      title: "Customer Orders",
+      url: "/dashboard/vendor/customer-orders",
+      icon: ListOrderedIcon,
+    },
+    {
+      title: "Subscription",
+      url: "/dashboard/vendor/subscription",
+      icon: SubscriptIcon,
+    },
+  ],
 } satisfies Record<"customer" | "admin" | "vendor", SidebarItem[]>
 
 const DashboardSidebar = async () => {
-    const session = await auth.api.getSession({
-        headers: await headers(),
-    })
-    const user = session?.user
-    const role: string = user?.role ?? "customer"
-    const sidebarItems =
-        itemsDescriptions[role === "admin" || role === "vendor" ? role : "customer"]
-    return (
-        <Sidebar>
-            <SidebarHeader className="h-20 justify-center border-b px-5">
-                <Link
-                    href="/"
-                    aria-label="PizzaHub home"
-                    className="w-fit rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring"
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  })
+  const user = session?.user
+  const role: string = user?.role ?? "customer"
+  const sidebarItems =
+    itemsDescriptions[role === "admin" || role === "vendor" ? role : "customer"]
+  return (
+    <Sidebar>
+      <SidebarHeader className="h-20 justify-center border-b px-5">
+        <Link
+          href="/"
+          aria-label="PizzaHub home"
+          className="w-fit rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring"
+        >
+          <BrandLogo />
+        </Link>
+      </SidebarHeader>
+      <SidebarContent className="mt-5">
+        <SidebarGroup>
+          <SidebarMenu className="flex flex-col gap-2">
+            {sidebarItems.map((item) => (
+              <SidebarMenuItem key={item.title}>
+                <DashboardNavLink
+                  href={item.url}
+                  exact={item.url === `/dashboard/${role}`}
                 >
-                    <BrandLogo />
-                </Link>
-            </SidebarHeader>
-            <SidebarContent className="mt-5">
-                <SidebarGroup>
-                    <SidebarMenu className="flex flex-col gap-2">
-                        {sidebarItems.map((item) => (
-                            <SidebarMenuItem key={item.title}>
-                                <DashboardNavLink
-                                    href={item.url}
-                                    exact={item.url === `/dashboard/${role}`}
-                                >
-                                    <item.icon aria-hidden="true" />
-                                    <span>{item.title}</span>
-                                </DashboardNavLink>
-                            </SidebarMenuItem>
-                        ))}
-                    </SidebarMenu>
-                </SidebarGroup>
-            </SidebarContent>
-            <SidebarFooter />
-        </Sidebar>
-    )
+                  <item.icon aria-hidden="true" />
+                  <span>{item.title}</span>
+                </DashboardNavLink>
+              </SidebarMenuItem>
+            ))}
+          </SidebarMenu>
+        </SidebarGroup>
+      </SidebarContent>
+      <SidebarFooter className="mt-auto border-t p-4">
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <DashboardNavLink href="/profile">
+              <User aria-hidden="true" />
+              <span>Profile Settings</span>
+            </DashboardNavLink>
+          </SidebarMenuItem>
+          <SidebarMenuItem>
+            <DashboardSignOut />
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarFooter>
+    </Sidebar>
+  )
 }
 
 export default DashboardSidebar
