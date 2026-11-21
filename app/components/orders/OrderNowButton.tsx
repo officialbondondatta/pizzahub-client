@@ -20,36 +20,28 @@ import {
     DialogClose,
 } from "@/components/ui/dialog"
 import { ShoppingBag } from "lucide-react"
+import { toast } from "@/components/ui/toast"
 
 export default function OrderNowButton({ item }: { item: IMenuItem }) {
     const [open, setOpen] = useState(false)
     const { data: session, isPending } = useSession()
     const customer = session?.user
-    const canOrder =
-        customer?.role === "customer" &&
-        !customer.isBlocked &&
-        item.status === "accepted" &&
-        item.isActive &&
-        !!item._id
-
+    if (!customer) {
+        toast.add({
+            title: "You are not logged in",
+        })
+        return
+    }
     function handleSubmit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault()
-        if (!canOrder || !customer || !item._id) return
         const form = event.currentTarget
         const formData = new FormData(form)
         const address = String(formData.get("deliveryAddress") || "").trim()
-        if (!address) {
-            const input = form.elements.namedItem(
-                "deliveryAddress"
-            ) as HTMLTextAreaElement
-            input.setCustomValidity("Please enter a delivery address.")
-            input.reportValidity()
-            return
-        }
+
         const order: IOrder = {
-            customerId: customer.id,
+            customerId: customer?.id ?? "",
             vendorId: item.vendorId,
-            menuItemId: item._id,
+            menuItemId: item._id as string,
             deliveryDate: String(formData.get("deliveryDate") || ""),
             deliveryAddress: address,
             additionalMessage: String(formData.get("additionalMessage") || "").trim(),
@@ -62,14 +54,12 @@ export default function OrderNowButton({ item }: { item: IMenuItem }) {
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger
-                render={
-                    <Button className="h-12 w-full" disabled={isPending || !canOrder} />
-                }
+                render={<Button className="h-12 w-full" disabled={isPending} />}
             >
                 <ShoppingBag aria-hidden="true" />
                 Order now
             </DialogTrigger>
-            {!isPending && !canOrder && (
+            {!isPending && (
                 <p className="mt-2 text-center text-sm text-muted-foreground">
                     {customer?.role !== "customer"
                         ? "Sign in as a customer to order."
@@ -114,6 +104,12 @@ export default function OrderNowButton({ item }: { item: IMenuItem }) {
                             id="delivery-date"
                             name="deliveryDate"
                             type="date"
+                            min={new Intl.DateTimeFormat("en-CA", {
+                                timeZone: "Asia/Dhaka",
+                                year: "numeric",
+                                month: "2-digit",
+                                day: "2-digit",
+                            }).format(new Date())}
                             required
                             className="h-11"
                         />
@@ -144,9 +140,7 @@ export default function OrderNowButton({ item }: { item: IMenuItem }) {
                         <DialogClose render={<Button variant="outline" type="button" />}>
                             Cancel
                         </DialogClose>
-                        <Button type="submit" disabled={!canOrder}>
-                            Submit order
-                        </Button>
+                        <Button type="submit">Submit order</Button>
                     </DialogFooter>
                 </form>
             </DialogContent>
