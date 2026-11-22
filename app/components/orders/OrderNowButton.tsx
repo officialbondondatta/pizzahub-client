@@ -27,12 +27,7 @@ export default function OrderNowButton({ item }: { item: IMenuItem }) {
     const [open, setOpen] = useState(false)
     const { data: session, isPending } = useSession()
     const customer = session?.user
-    if (!customer) {
-        toast.add({
-            title: "You are not logged in",
-        })
-        return
-    }
+    if (!customer) return null
     async function handleSubmit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault()
         const form = event.currentTarget

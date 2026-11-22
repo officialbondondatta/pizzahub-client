@@ -18,7 +18,7 @@ export default function DashboardSignOut() {
       const { error } = await authClient.signOut()
       if (error) throw new Error(error.message || "Please try again.")
       setOpenMobile(false)
-      router.replace("/sign-in")
+      router.push("/")
       router.refresh()
     } catch (error) {
       toast.add({

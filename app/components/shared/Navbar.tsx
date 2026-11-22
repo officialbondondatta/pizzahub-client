@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { usePathname } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 import { ChevronDown, LayoutDashboard, LogOut, Menu, Moon, Sun, UserRound, X } from "lucide-react"
 import { useEffect, useRef, useState } from "react"
 import { useTheme } from "next-themes"
@@ -35,6 +35,7 @@ const focusStyles =
 
 const Navbar = () => {
     const pathname = usePathname()
+    const router = useRouter()
     const { resolvedTheme, setTheme } = useTheme()
     const [isOpen, setIsOpen] = useState(false)
     const [failedAvatar, setFailedAvatar] = useState<string | null>(null)
@@ -56,6 +57,11 @@ const Navbar = () => {
 
     const handleSignOut = async () => {
         const { error } = await authClient.signOut()
+        if (!error) {
+            setIsOpen(false)
+            router.push("/")
+            router.refresh()
+        }
         toast.add({
             title: error ? "Sign-out failed" : "Sign-out successful",
             description: error ? error.message : "You have successfully signed out.",
