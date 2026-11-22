@@ -6,6 +6,7 @@ import PizzaCategories from "@/app/components/menu/PizzaCategories"
 import WhyChoosePizzaHub from "@/app/components/menu/WhyChoosePizzaHub"
 import HowPizzaHubWorks from "@/app/components/menu/HowPizzaHubWorks"
 import PizzaLoversTips from "@/app/components/menu/PizzaLoversTips"
+import PopularPizzaCombos from "@/app/components/menu/PopularPizzaCombos"
 import { Suspense } from "react"
 
 export default function HomePage() {
@@ -70,6 +71,7 @@ export default function HomePage() {
       <WhyChoosePizzaHub />
       <HowPizzaHubWorks />
       <PizzaLoversTips />
+      <PopularPizzaCombos />
     </>
   )
 }

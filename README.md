@@ -15,7 +15,7 @@ This repository contains the Next.js frontend, authentication integration, serve
 
 ## Features
 
-- Homepage sections for six featured approved/active items, pizza categories, Why Choose PizzaHub, How PizzaHub Works, and Pizza Lovers’ Tips.
+- Homepage sections for six featured approved/active items, pizza categories, Why Choose PizzaHub, How PizzaHub Works, Pizza Lovers’ Tips, and Popular Pizza Combos.
 - Category links open filtered menu results; viewing individual item details requires sign-in.
 - Email/password and Google authentication, with customer and vendor registration.
 - Separate customer, vendor, and administrator dashboards.
