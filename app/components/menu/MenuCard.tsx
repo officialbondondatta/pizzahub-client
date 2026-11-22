@@ -55,7 +55,7 @@ export default function MenuCard({ item }: { item: IMenuItem }) {
           <Button
             disabled={isPending}
             onClick={handleViewDetails}
-            className="h-11 rounded-xl bg-brand-700 text-white hover:bg-brand-800"
+            className="h-11 cursor-pointer rounded-xl bg-brand-700 text-white hover:bg-brand-800"
           >
             View details
           </Button>
