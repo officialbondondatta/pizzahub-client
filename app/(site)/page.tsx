@@ -2,6 +2,7 @@ import Image from "next/image"
 import Link from "next/link"
 import { ArrowUpRight } from "lucide-react"
 import FeaturedMenuItems from "@/app/components/menu/FeaturedMenuItems"
+import PizzaCategories from "@/app/components/menu/PizzaCategories"
 import { Suspense } from "react"
 
 export default function HomePage() {
@@ -62,6 +63,7 @@ export default function HomePage() {
       >
         <FeaturedMenuItems />
       </Suspense>
+      <PizzaCategories />
     </>
   )
 }

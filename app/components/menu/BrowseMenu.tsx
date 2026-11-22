@@ -17,9 +17,15 @@ import { Button } from "@/components/ui/button"
 import MenuCard from "./MenuCard"
 import { menuCategories as categories } from "@/app/lib/menu-categories"
 
-export default function BrowseMenu({ items }: { items: IMenuItem[] }) {
+export default function BrowseMenu({
+  items,
+  initialCategory = "",
+}: {
+  items: IMenuItem[]
+  initialCategory?: string
+}) {
   const [search, setSearch] = useState("")
-  const [category, setCategory] = useState("")
+  const [category, setCategory] = useState(initialCategory)
   const [location, setLocation] = useState("")
   const [sort, setSort] = useState("default")
   const locations = [...new Set(items.map((item) => item.location))].sort()
