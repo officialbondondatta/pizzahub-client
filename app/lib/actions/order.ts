@@ -39,3 +39,13 @@ export const cancelOrder = async (id: string) => {
     })
     return result.json()
 }
+
+export const getAllOrders = async () => {
+    const token = await getTokenNow()
+    const result = await fetch(`${BASEURL}/order`, {
+        headers: {
+            authorization: `Bearer ${token}`
+        }
+    })
+    return result.json()
+}
