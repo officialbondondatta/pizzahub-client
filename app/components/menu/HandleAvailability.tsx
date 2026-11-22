@@ -1,4 +1,5 @@
 "use client"
+import { getSubscriptionPlan } from "@/app/lib/subscription"
 import {
   changeAvailability,
   getActiveItemsCount,
@@ -17,7 +18,7 @@ import { useRouter } from "next/navigation"
 
 const HandleAvailability = ({ item }: { item: IMenuItem }) => {
   const { data: session } = useSession()
-  const userPlan = session?.user?.plan || "free"
+  const userPlan = getSubscriptionPlan(session?.user)
   const router = useRouter()
   const handleAvailablity = async (
     id: string,

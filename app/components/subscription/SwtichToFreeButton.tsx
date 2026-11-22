@@ -1,4 +1,5 @@
 "use client"
+import { getSubscriptionPlan } from "@/app/lib/subscription"
 import { useSession } from '@/app/lib/auth-client';
 import { Button } from '@/components/ui/button';
 import { toast } from '@/components/ui/toast';
@@ -6,7 +7,7 @@ import { toast } from '@/components/ui/toast';
 
 const SwtichToFreeButton = () => {
     const { data: session } = useSession()
-    const userPlan = session?.user?.plan
+    const userPlan = getSubscriptionPlan(session?.user)
     const handleSwitchingPlan = () => {
         toast.add({
             title: "Not available now",

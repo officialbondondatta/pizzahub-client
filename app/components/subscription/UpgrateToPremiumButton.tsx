@@ -1,4 +1,5 @@
 "use client"
+import { getSubscriptionPlan } from "@/app/lib/subscription"
 import { useSession } from '@/app/lib/auth-client';
 import { Button } from '@/components/ui/button';
 import { ArrowUpRight } from 'lucide-react';
@@ -6,7 +7,7 @@ import { ArrowUpRight } from 'lucide-react';
 
 const UpgrateToPremiumButton = () => {
     const { data: session } = useSession()
-    const userPlan = session?.user?.plan
+    const userPlan = getSubscriptionPlan(session?.user)
     return (
         <form action="/api/checkout_sessions" method="POST">
             <section>

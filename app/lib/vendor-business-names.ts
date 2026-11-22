@@ -1,3 +1,4 @@
+import { getSubscriptionPlan } from "./subscription"
 import "server-only"
 import { MongoClient, ObjectId } from "mongodb"
 import type { IMenuItem } from "@/app/Types/menu-items"
@@ -15,7 +16,7 @@ export async function withVendorBusinessNames(
   const vendors = await client
     .db("pizzahub")
     .collection("user")
-    .find({ _id: { $in: ids } }, { projection: { businessName: 1, plan: 1 } })
+    .find({ _id: { $in: ids } }, { projection: { businessName: 1, plan: 1, subscriptionExpiresAt: 1 } })
     .toArray()
   const vendorsById = new Map(
     vendors.map((vendor) => [vendor._id.toString(), vendor])
@@ -29,9 +30,7 @@ export async function withVendorBusinessNames(
           ? vendor.businessName
           : undefined,
       vendorPlan:
-        vendor?.plan === "premium" || vendor?.plan === "free"
-          ? vendor.plan
-          : undefined,
+        getSubscriptionPlan(vendor ? { plan: vendor.plan, subscriptionExpiresAt: vendor.subscriptionExpiresAt } : null),
     }
   })
 }

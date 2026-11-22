@@ -1,5 +1,6 @@
 "use client"
 
+import { formatSubscriptionExpiry, getSubscriptionPlan } from "@/app/lib/subscription"
 import { useState } from "react"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
@@ -52,26 +53,15 @@ function UserPhoto({
   )
 }
 
-function formatExpiry(value?: string) {
-  if (!value) return "Not provided"
-  const date = new Date(value)
-  return Number.isNaN(date.getTime())
-    ? "Not available"
-    : new Intl.DateTimeFormat("en-GB", {
-      dateStyle: "long",
-      timeZone: "UTC",
-    }).format(date)
-}
-
 export default function UserDetailsDialog({ user }: { user: TableUser }) {
   const details = [
     ["Name", user.name],
     ["Email", user.email],
     ["Role", user.role],
     ["Business name", user.businessName || "Not provided"],
-    ["Plan", user.plan || "free"],
+    ["Plan", getSubscriptionPlan(user)],
     ["Account status", user.isBlocked ? "Blocked" : "Active"],
-    ["Subscription expires", formatExpiry(user.subscriptionExpiresAt)],
+    ["Subscription expires", formatSubscriptionExpiry(user.subscriptionExpiresAt)],
   ]
   return (
     <Dialog>

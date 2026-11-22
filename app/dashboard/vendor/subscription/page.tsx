@@ -1,3 +1,5 @@
+import { getSessionNow } from "@/app/lib/core/server"
+import { formatSubscriptionExpiry, getSubscriptionPlan } from "@/app/lib/subscription"
 import PaymentToast from "@/app/components/subscription/PaymentToast"
 import Image from "next/image"
 import { Check, Crown, Pizza, Sparkles } from "lucide-react"
@@ -19,7 +21,7 @@ const plans = [
   {
     name: "Premium",
     description: "A bigger menu. A brighter spotlight.",
-    caption: "Unlock your kitchen's full potential",
+    caption: "Premium access for 60 days",
     features: [
       "Unlimited active menu items",
       "Premium vendor badge",
@@ -33,6 +35,8 @@ type SubscriptionPageProps = {
 }
 
 const SubscriptionPage = async ({ searchParams }: SubscriptionPageProps) => {
+  const session = await getSessionNow()
+  const user = session?.user
   const { canceled, checkout } = await searchParams
   if (canceled === "true") {
     redirect("/payment/cancel")
@@ -47,6 +51,11 @@ const SubscriptionPage = async ({ searchParams }: SubscriptionPageProps) => {
           message="Payment checkout is unavailable. Please try again in a moment."
         />
       )}
+      <section className="rounded-2xl border bg-card p-6">
+        <h2 className="font-semibold">Current plan: {getSubscriptionPlan(user) === "premium" ? "Premium" : "Free"}</h2>
+        <p className="mt-2 text-sm text-muted-foreground">Each Premium subscription lasts 60 days from activation.</p>
+        {user?.subscriptionExpiresAt && <p className="mt-2 text-sm">{getSubscriptionPlan(user) === "premium" ? "Expires" : "Expired"}: {formatSubscriptionExpiry(user.subscriptionExpiresAt)}</p>}
+      </section>
       <header>
         <p className="mb-2 text-xs font-semibold tracking-[0.2em] text-brand-700 uppercase dark:text-brand-300">
           Made for your next chapter

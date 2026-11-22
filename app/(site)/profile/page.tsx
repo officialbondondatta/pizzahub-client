@@ -1,5 +1,6 @@
 "use client"
 
+import { formatSubscriptionExpiry, getSubscriptionPlan } from "@/app/lib/subscription"
 import { useState, type FormEvent, type ReactNode } from "react"
 import Link from "next/link"
 import {
@@ -50,9 +51,12 @@ function ProfileForm({
     email: string
     image?: string | null
     role?: string | null
+    businessName?: string | null
+    subscriptionExpiresAt?: string | null
     plan: string
   }
 }) {
+  const [viewedAt] = useState(() => Date.now())
   const [name, setName] = useState(user.name)
   const [image, setImage] = useState(user.image || "")
   const [failedImage, setFailedImage] = useState<string | null>(null)
@@ -135,15 +139,35 @@ function ProfileForm({
           <h2 className="mt-1 truncate text-xl font-semibold">
             {name.trim() || "Your profile"}
           </h2>
-          <div className="flex items-center gap-2 text-center">
+          <div className="flex flex-wrap items-center gap-2 text-center">
             <span className="mt-2 inline-flex rounded-full border border-primary/30 bg-primary/20 px-3 py-1 text-xs font-medium capitalize">
               {user.role || "customer"}
             </span>
-            <SubscriptionPlan plan={user.plan}></SubscriptionPlan>
+            <SubscriptionPlan plan={getSubscriptionPlan(user)}></SubscriptionPlan>
           </div>
         </div>
       </div>
       <form onSubmit={handleSubmit} className="space-y-6 p-6 sm:p-9">
+        {user.role === "vendor" && (
+          <section aria-labelledby="profile-subscription-heading" className="rounded-xl border border-primary/20 bg-primary/10 p-4">
+            <h3 id="profile-subscription-heading" className="font-semibold">Your subscription</h3>
+            <p className="mt-2 text-sm leading-relaxed">
+              {user.subscriptionExpiresAt && !Number.isNaN(new Date(user.subscriptionExpiresAt).getTime()) ? (
+                <>
+                  Your Premium subscription {new Date(user.subscriptionExpiresAt).getTime() > viewedAt ? "will end on" : "ended on"}{" "}
+                  <strong>{formatSubscriptionExpiry(user.subscriptionExpiresAt)}</strong>.
+                </>
+              ) : user.plan === "premium" ? (
+                "Your Premium subscription is active, but its end date has not been saved yet."
+              ) : (
+                "You are on the Free plan. When you subscribe to Premium, your subscription will end 60 days after activation."
+              )}
+            </p>
+            <Link href="/dashboard/vendor/subscription" className="mt-3 inline-block text-sm font-medium underline underline-offset-4">
+              View subscription
+            </Link>
+          </section>
+        )}
         <div>
           <h3 className="text-lg font-semibold">Personal details</h3>
           <p className="mt-1 text-sm text-muted-foreground">
@@ -151,6 +175,24 @@ function ProfileForm({
           </p>
         </div>
         <fieldset disabled={saving} className="space-y-5 disabled:opacity-70">
+          {user.role === "vendor" && (
+            <div className="space-y-2">
+              <Label htmlFor="business-name">
+                Business name
+                <LockKeyhole className="size-3.5 text-muted-foreground" aria-hidden="true" />
+              </Label>
+              <Input
+                id="business-name"
+                value={user.businessName || "Not provided"}
+                readOnly
+                aria-describedby="business-name-help"
+                className="h-12 rounded-xl bg-muted/60 text-muted-foreground"
+              />
+              <p id="business-name-help" className="text-xs text-muted-foreground">
+                Your business name cannot be changed here.
+              </p>
+            </div>
+          )}
           <div className="space-y-2">
             <Label htmlFor="name">Full name</Label>
             <Input

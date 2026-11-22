@@ -1,5 +1,6 @@
 "use client"
 
+import { getSubscriptionPlan } from "@/app/lib/subscription"
 import { useState } from "react"
 import { Ban, Search, ShieldCheck, Users } from "lucide-react"
 import type { IUser } from "@/app/Types/user"
@@ -204,7 +205,7 @@ export default function UsersTable({ users }: { users: TableUser[] }) {
                   {user.businessName || "—"}
                 </TableCell>
                 <TableCell className="px-5 py-4 capitalize">
-                  {user.plan || "free"}
+                  {getSubscriptionPlan(user)}
                 </TableCell>
                 <TableCell className="px-5 py-4">
                   <Badge
@@ -251,7 +252,7 @@ export default function UsersTable({ users }: { users: TableUser[] }) {
                         <p>
                           Plan:{" "}
                           <span className="font-medium capitalize">
-                            {user.plan || "free"}
+                            {getSubscriptionPlan(user)}
                           </span>
                         </p>
                         <p>

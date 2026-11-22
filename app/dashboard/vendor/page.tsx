@@ -1,3 +1,4 @@
+import { formatSubscriptionExpiry, getSubscriptionPlan } from "@/app/lib/subscription"
 import Image from "next/image"
 import Link from "next/link"
 import {
@@ -52,7 +53,7 @@ export default async function VendorDashboard() {
     },
     {
       label: "Current subscription plan",
-      value: session.user.plan === "premium" ? "Premium" : "Free",
+      value: getSubscriptionPlan(session.user) === "premium" ? "Premium" : "Free",
       icon: Crown,
       href: "/dashboard/vendor/subscription",
     },
@@ -60,6 +61,7 @@ export default async function VendorDashboard() {
 
   return (
     <div className="mx-auto max-w-7xl space-y-8">
+      {session.user.subscriptionExpiresAt && <p className="text-sm text-muted-foreground">Premium {getSubscriptionPlan(session.user) === "premium" ? "expires" : "expired"}: {formatSubscriptionExpiry(session.user.subscriptionExpiresAt)}</p>}
       <section className="grid overflow-hidden rounded-2xl border border-brand-300 bg-brand-100/50 md:grid-cols-2 dark:border-brand-800 dark:bg-brand-900/20">
         <div className="flex flex-col justify-center p-6 sm:p-8">
           <p className="mb-3 text-xs font-semibold tracking-widest text-brand-700 uppercase dark:text-brand-300">

@@ -1,4 +1,5 @@
 "use client"
+import { formatSubscriptionExpiry, getSubscriptionPlan } from "@/app/lib/subscription"
 import Image from "next/image"
 import RequestDate from "@/app/components/orders/RequestDate"
 import { Eye, Trash2, MapPin, Clock3, CircleCheck, CircleX } from "lucide-react"
@@ -282,9 +283,13 @@ export default function AdminMenuTable({
                             </dt>
                             <dd className="mt-1">
                               <Badge variant="outline" className="capitalize">
-                                {vendor.plan || "Not available"}
+                                {getSubscriptionPlan(vendor)}
                               </Badge>
                             </dd>
+                          </div>
+                          <div>
+                            <dt className="text-muted-foreground">Subscription expires</dt>
+                            <dd className="mt-1">{formatSubscriptionExpiry(vendor.subscriptionExpiresAt)}</dd>
                           </div>
                         </dl>
                         <DialogFooter showCloseButton />

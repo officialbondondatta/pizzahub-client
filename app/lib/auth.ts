@@ -33,6 +33,11 @@ export const auth = betterAuth({
                 defaultValue: false,
                 input: false,
             },
+            subscriptionExpiresAt: {
+                type: "string",
+                required: false,
+                input: false,
+            },
             businessName: {
                 type: "string",
                 // Required conditionally for vendors by the creation hook below.
