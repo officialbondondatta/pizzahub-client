@@ -36,7 +36,12 @@ export const blockUser = async (id: string) => {
         cache: 'no-cache'
     })
     if (!result.ok) {
-        throw new Error("Failed to block user")
+        const data = await result.json().catch(() => null)
+        return {
+            message: typeof data?.message === "string"
+                ? data.message
+                : "Failed to update user block status",
+        }
     }
     return result.json()
 }

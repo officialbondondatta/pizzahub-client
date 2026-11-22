@@ -36,6 +36,7 @@ import {
 } from "@/components/ui/table"
 import { blockUser } from "@/app/lib/actions/users";
 import { useRouter } from "next/navigation";
+import { toast } from "@/components/ui/toast"
 
 export type TableUser = Pick<
   IUser,
@@ -62,8 +63,22 @@ export default function UsersTable({ users }: { users: TableUser[] }) {
         user.email.toLowerCase().includes(query))
   )
   const handleBlockUser = async (id: string) => {
-    await blockUser(id)
-    router.refresh()
+    try {
+      const result = await blockUser(id)
+      toast.add({
+        title: result.message || (
+          result.modifiedCount > 0
+            ? "User block status updated"
+            : "No changes made"
+        ),
+      })
+      router.refresh()
+    } catch {
+      toast.add({
+        title: "Could not update user block status",
+        description: "Please try again.",
+      })
+    }
   }
   return (
     <section className="space-y-4" aria-label="User directory">
