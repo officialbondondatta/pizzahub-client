@@ -84,6 +84,7 @@ export default function AdminOverview({ totals }: { totals: OverviewTotals }) {
         </div>
         <div className="relative min-h-72">
           <Image
+            loading="eager"
             src="/images/pizza-seller.png"
             alt="A pizza shop owner in a modern orange dress offering a fresh pizza."
             fill

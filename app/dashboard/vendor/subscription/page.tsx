@@ -65,6 +65,7 @@ const SubscriptionPage = async ({ searchParams }: SubscriptionPageProps) => {
         </div>
         <div className="relative min-h-64 sm:min-h-80">
           <Image
+            loading="eager"
             src="/images/subscription-pizzahub.png"
             alt="A middle-aged woman in a terracotta bandeau top ordering PizzaHub on her phone at a sunny café."
             fill

@@ -50,6 +50,7 @@ export default async function ManageUsersPage() {
         </div>
         <div className="relative min-h-72">
           <Image
+            loading="eager"
             src="/images/pizza-seller.png"
             alt="A pizza seller in her thirties wearing a modern short orange dress and offering a freshly baked pizza."
             fill

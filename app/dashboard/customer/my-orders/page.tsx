@@ -44,6 +44,7 @@ export default async function MyOrdersPage() {
         </div>
         <div className="relative min-h-72">
           <Image
+            loading="eager"
             src="/images/pizzahub-delivery.png"
             alt="A young adult woman in a modern orange dress receiving pizza boxes from a PizzaHub delivery worker."
             fill

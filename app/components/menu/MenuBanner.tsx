@@ -11,7 +11,8 @@ export default function MenuBanner({ vendor = false }: { vendor?: boolean }) {
         fill
         sizes="(max-width: 1280px) 100vw, 1280px"
         className="-z-20 object-cover object-center"
-        priority
+        loading="eager"
+        fetchPriority="high"
       />
       <div className="absolute inset-0 -z-10 bg-linear-to-r from-brand-950 via-brand-950/85 to-brand-950/20" />
       <p className="mb-3 text-sm font-semibold tracking-widest text-brand-200 uppercase">

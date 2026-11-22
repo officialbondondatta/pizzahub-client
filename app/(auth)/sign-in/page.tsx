@@ -53,7 +53,7 @@ export default function SignInPage() {
                     fill
                     sizes="(max-width: 1023px) 100vw, 42vw"
                     className="-z-20 object-cover object-[center_25%]"
-                    loading="lazy"
+                    loading="eager"
                     fetchPriority="high"
                 />
                 <div

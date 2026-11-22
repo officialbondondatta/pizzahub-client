@@ -24,6 +24,7 @@ export default async function ManageMenuItemsPage() {
         </div>
         <div className="relative min-h-72">
           <Image
+            loading="eager"
             src="/images/pizza-seller.png"
             alt="A pizza shop owner offering a freshly baked pizza."
             fill

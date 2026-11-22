@@ -28,6 +28,7 @@ export default async function TransactionsPage() {
         </div>
         <div className="relative min-h-72">
           <Image
+            loading="eager"
             src="/images/pizzahub-payment.png"
             alt="An adult South Asian woman in a modern orange outfit paying by card at a pizza restaurant."
             fill

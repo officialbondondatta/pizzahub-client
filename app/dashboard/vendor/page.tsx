@@ -82,6 +82,7 @@ export default async function VendorDashboard() {
           </Button>
         </div>
         <Image
+          loading="eager"
           src="/images/pizzahub-customer-orders.png"
           alt="A smiling woman holding a pizza box in a warm, welcoming pizzeria."
           width={1672}

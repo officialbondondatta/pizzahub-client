@@ -69,6 +69,7 @@ export default function CustomerOverview({ totals }: { totals: OrderTotals }) {
         </div>
         <div className="relative min-h-72">
           <Image
+            loading="eager"
             src="/images/pizzahub-delivery.png"
             alt="A customer receiving pizza boxes from a PizzaHub delivery worker."
             fill
