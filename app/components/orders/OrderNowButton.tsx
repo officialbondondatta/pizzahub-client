@@ -72,15 +72,6 @@ export default function OrderNowButton({ item }: { item: IMenuItem }) {
                 <ShoppingBag aria-hidden="true" />
                 Order now
             </DialogTrigger>
-            {!isPending && (
-                <p className="mt-2 text-center text-sm text-muted-foreground">
-                    {customer?.role !== "customer"
-                        ? "Sign in as a customer to order."
-                        : customer.isBlocked
-                            ? "Your account is blocked."
-                            : "This item is not available for ordering."}
-                </p>
-            )}
             <DialogContent className="max-h-[85dvh] overflow-y-auto sm:max-w-lg">
                 <DialogHeader>
                     <DialogTitle>Order {item.name}</DialogTitle>
