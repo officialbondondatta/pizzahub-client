@@ -8,10 +8,10 @@ This repository contains the Next.js frontend, authentication integration, serve
 
 | Resource          | Link                                                   |
 | ----------------- | ------------------------------------------------------ |
-| Live website      | To be added                                            |
-| Live backend API  | To be added                                            |
+| Live website      | https://pizzahub-bondon.vercel.app                     |
+| Live backend API  | https://pizzahub-server-bondon.vercel.app              |
 | Client repository | https://github.com/officialbondondatta/pizzahub-client |
-| Server repository | To be added                                            |
+| Server repository | https://github.com/officialbondondatta/pizzahub_server.git |
 
 ## Features
 
