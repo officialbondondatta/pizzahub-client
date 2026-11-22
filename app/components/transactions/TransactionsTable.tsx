@@ -1,6 +1,7 @@
 "use client"
 
 import VendorAvatar from "./VendorAvatar"
+import RequestDate from "@/app/components/orders/RequestDate"
 import { Eye, Receipt } from "lucide-react"
 import type { ITransaction } from "@/app/Types/transactions"
 import { Button } from "@/components/ui/button"
@@ -25,16 +26,6 @@ import {
 } from "@/components/ui/dialog"
 import { IUser } from "@/app/Types/user"
 
-function formatDate(value?: string) {
-  if (!value) return "—"
-  const date = new Date(value)
-  return Number.isNaN(date.getTime())
-    ? "—"
-    : new Intl.DateTimeFormat("en-GB", {
-        dateStyle: "medium",
-        timeZone: "Asia/Dhaka",
-      }).format(date)
-}
 export interface ITransactionTableProps {
   transactions: ITransaction[]
   users: Pick<IUser, "_id" | "name" | "email" | "image" | "businessName">[]
@@ -123,9 +114,9 @@ export default function TransactionsTable({
                   </Badge>
                 </TableCell>
                 <TableCell className="px-5 py-4">
-                  {formatDate(
-                    transaction.payment_date || transaction.createdAt
-                  )}
+                  <RequestDate
+                    value={transaction.createdAt || transaction.payment_date}
+                  />
                 </TableCell>
                 <TableCell className="px-5 py-4">
                   <Dialog>
@@ -193,9 +184,12 @@ export default function TransactionsTable({
                             Transaction date
                           </dt>
                           <dd className="mt-1">
-                            {formatDate(
-                              transaction.payment_date || transaction.createdAt
-                            )}
+                            <RequestDate
+                              value={
+                                transaction.createdAt ||
+                                transaction.payment_date
+                              }
+                            />
                           </dd>
                         </div>
                       </dl>
