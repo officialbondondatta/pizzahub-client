@@ -1,5 +1,6 @@
 "use client"
 import Image from "next/image"
+import RequestDate from "@/app/components/orders/RequestDate"
 import Link from "next/link"
 import { Eye, Trash2, MapPin, Clock3, CircleCheck, CircleX } from "lucide-react"
 import type { IMenuItem } from "@/app/Types/menu-items"
@@ -78,6 +79,7 @@ export default function MenuTable({ items }: { items: IMenuItem[] }) {
               "Location",
               "Status",
               "Availability",
+              "Created at",
               "Actions",
             ].map((label) => (
               <TableHead
@@ -147,6 +149,9 @@ export default function MenuTable({ items }: { items: IMenuItem[] }) {
               </TableCell>
               <TableCell className="px-5 py-4">
                 <HandleAvailability item={item}></HandleAvailability>
+              </TableCell>
+              <TableCell className="min-w-36 px-5 py-4">
+                <RequestDate value={item.createdAt} />
               </TableCell>
               <TableCell className="px-5 py-4">
                 <div className="flex items-center gap-2">

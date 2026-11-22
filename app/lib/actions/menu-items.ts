@@ -1,6 +1,7 @@
 "use server"
 
 import type { IMenuItem } from "@/app/Types/menu-items"
+import { sortMenuItemsNewestFirst } from "@/app/lib/sort-menu-items"
 import { auth } from "../auth"
 import { headers } from "next/headers"
 import { getSessionNow, getTokenNow } from "../core/server"
@@ -64,7 +65,7 @@ export const getMenuItemsByID = async (): Promise<IMenuItem[]> => {
       authorization: `Bearer ${token}`,
     },
   })
-  return readMenuResponse<IMenuItem[]>(res)
+  return sortMenuItemsNewestFirst(await readMenuResponse<IMenuItem[]>(res))
 }
 
 export const getSingleItemDetails = async (
@@ -87,7 +88,7 @@ export const getSingleItemDetails = async (
 
 export const getAllMenuItems = async (): Promise<IMenuItem[]> => {
   const result = await fetch(`${BASEURL}/menu-items`)
-  return readMenuResponse<IMenuItem[]>(result)
+  return sortMenuItemsNewestFirst(await readMenuResponse<IMenuItem[]>(result))
 }
 
 export const updateMenuItem = async (id: string, data: Partial<IMenuItem>) => {
