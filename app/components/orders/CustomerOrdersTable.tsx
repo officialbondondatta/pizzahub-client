@@ -23,9 +23,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { changeOrderStatus } from "@/app/lib/actions/order";
-import { useRouter } from "next/navigation";
-import { toast } from "@/components/ui/toast";
+import { changeOrderStatus } from "@/app/lib/actions/order"
+import { useRouter } from "next/navigation"
+import { toast } from "@/components/ui/toast"
 
 export default function CustomerOrdersTable({
   orders,
@@ -37,13 +37,18 @@ export default function CustomerOrdersTable({
   customers: Pick<IUser, "_id" | "name" | "email" | "image">[]
 }) {
   const router = useRouter()
-  const handleOrderAction = async (order: IOrder, status: "accepted" | "rejected") => {
-    const result = await changeOrderStatus(order._id as string, { status: status })
+  const handleOrderAction = async (
+    order: IOrder,
+    status: "accepted" | "rejected"
+  ) => {
+    const result = await changeOrderStatus(order._id as string, {
+      status: status,
+    })
     console.log(result)
     if (result.modifiedCount > 0) {
       toast.add({
         title: `Order ${status}`,
-        description: `Successful`
+        description: `Successful`,
       })
       router.refresh()
     }
@@ -160,21 +165,34 @@ export default function CustomerOrdersTable({
                   </Dialog>
                 </TableCell>
                 <TableCell className="px-5 py-4">
-                  <p className="font-medium">
-                    {item?.name || "Item unavailable"}
-                  </p>
-                  {item && (
-                    <p className="text-xs text-muted-foreground">
-                      {item.category}
-                    </p>
+                  {item ? (
+                    <button
+                      type="button"
+                      onClick={() =>
+                        router.push(
+                          `/browse-menu/${encodeURIComponent(order.menuItemId)}`
+                        )
+                      }
+                      aria-label={`View item details for ${item.name}`}
+                      className="max-w-64 cursor-pointer rounded-lg p-2 text-left whitespace-normal outline-none hover:bg-muted focus-visible:ring-2 focus-visible:ring-brand-500"
+                    >
+                      <span className="block font-medium wrap-break-word text-brand-700 underline-offset-4 hover:underline dark:text-brand-300">
+                        {item.name}
+                      </span>
+                      <span className="block text-xs text-muted-foreground">
+                        {item.category}
+                      </span>
+                    </button>
+                  ) : (
+                    <p className="font-medium">Item unavailable</p>
                   )}
                 </TableCell>
                 <TableCell className="px-5 py-4">
                   {Number.isNaN(date.getTime())
                     ? "Not available"
                     : date.toLocaleDateString("en-GB", {
-                      timeZone: "Asia/Dhaka",
-                    })}
+                        timeZone: "Asia/Dhaka",
+                      })}
                 </TableCell>
                 <TableCell className="max-w-56 min-w-40 px-5 py-4 wrap-break-word whitespace-pre-wrap">
                   {order.deliveryAddress}
