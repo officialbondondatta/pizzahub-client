@@ -58,3 +58,16 @@ export const getUserInfo = async () => {
     })
     return result.json()
 }
+
+export const changeOrderStatus = async (id: string, data: { status: string }) => {
+    const token = await getTokenNow()
+    const result = await fetch(`${BASEURL}/order/${id}`, {
+        method: "PATCH",
+        headers: {
+            'Content-Type': 'application/json',
+            authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify(data)
+    })
+    return result.json()
+}

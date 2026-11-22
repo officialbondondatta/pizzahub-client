@@ -23,6 +23,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { changeOrderStatus } from "@/app/lib/actions/order";
+import { useRouter } from "next/navigation";
+import { toast } from "@/components/ui/toast";
 
 export default function CustomerOrdersTable({
   orders,
@@ -33,12 +36,17 @@ export default function CustomerOrdersTable({
   items: IMenuItem[]
   customers: Pick<IUser, "_id" | "name" | "email" | "image">[]
 }) {
-  // Placeholder only: connect these actions to the API later.
-  const handleOrderAction = (
-    order: IOrder,
-    status: "accepted" | "rejected"
-  ) => {
-    console.log("Order action", { orderId: order._id, status })
+  const router = useRouter()
+  const handleOrderAction = async (order: IOrder, status: "accepted" | "rejected") => {
+    const result = await changeOrderStatus(order._id as string, { status: status })
+    console.log(result)
+    if (result.modifiedCount > 0) {
+      toast.add({
+        title: `Order ${status}`,
+        description: `Successful`
+      })
+      router.refresh()
+    }
   }
 
   return (
@@ -165,8 +173,8 @@ export default function CustomerOrdersTable({
                   {Number.isNaN(date.getTime())
                     ? "Not available"
                     : date.toLocaleDateString("en-GB", {
-                        timeZone: "Asia/Dhaka",
-                      })}
+                      timeZone: "Asia/Dhaka",
+                    })}
                 </TableCell>
                 <TableCell className="max-w-56 min-w-40 px-5 py-4 wrap-break-word whitespace-pre-wrap">
                   {order.deliveryAddress}
