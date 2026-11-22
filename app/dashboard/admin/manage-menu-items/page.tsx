@@ -3,6 +3,7 @@ import ManageMenuItems from "@/app/components/menu/ManageMenuItems"
 
 export default async function ManageMenuItemsPage() {
   const items = await getAllMenuItems()
+  const users = await getUsers()
   return (
     <div className="mx-auto max-w-7xl">
       <section className="grid overflow-hidden rounded-2xl border border-brand-300 bg-brand-100/50 md:grid-cols-[1fr_360px] dark:border-brand-800 dark:bg-brand-900/20">
@@ -31,8 +32,9 @@ export default async function ManageMenuItemsPage() {
           />
         </div>
       </section>
-      <ManageMenuItems items={items} />
+      <ManageMenuItems items={items} users={users} />
     </div>
   )
 }
 import Image from "next/image"
+import { getUsers } from "@/app/lib/actions/users";

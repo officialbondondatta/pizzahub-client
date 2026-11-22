@@ -16,8 +16,9 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import AdminMenuTable from "./AdminMenuTable"
 import { menuCategories as categories } from "@/app/lib/menu-categories"
+import { IUser } from "@/app/Types/user";
 
-export default function ManageMenuItems({ items }: { items: IMenuItem[] }) {
+export default function ManageMenuItems({ items, users }: { items: IMenuItem[], users: IUser[] }) {
   const [search, setSearch] = useState("")
   const [category, setCategory] = useState("")
   const [location, setLocation] = useState("")
@@ -122,7 +123,7 @@ export default function ManageMenuItems({ items }: { items: IMenuItem[] }) {
         {filtered.length} {filtered.length === 1 ? "item" : "items"} found
       </p>
       {filtered.length ? (
-        <AdminMenuTable items={filtered} />
+        <AdminMenuTable items={filtered} users={users} />
       ) : (
         <Empty className="rounded-2xl border px-6 py-16">
           <Pizza
