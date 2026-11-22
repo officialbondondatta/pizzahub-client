@@ -21,6 +21,7 @@ export default function BrowseMenu({ items }: { items: IMenuItem[] }) {
   const [search, setSearch] = useState("")
   const [category, setCategory] = useState("")
   const [location, setLocation] = useState("")
+  const [sort, setSort] = useState("default")
   const locations = [...new Set(items.map((item) => item.location))].sort()
   const filtered = items.filter(
     (item) =>
@@ -28,16 +29,19 @@ export default function BrowseMenu({ items }: { items: IMenuItem[] }) {
       (!category || item.category === category) &&
       (!location || item.location === location)
   )
+  if (sort === "price-asc") filtered.sort((a, b) => a.price - b.price)
+  if (sort === "price-desc") filtered.sort((a, b) => b.price - a.price)
 
   function resetFilters() {
     setSearch("")
     setCategory("")
     setLocation("")
+    setSort("default")
   }
 
   return (
     <section className="mt-8" aria-label="Menu items">
-      <div className="grid gap-4 rounded-2xl border bg-card p-5 sm:grid-cols-2 lg:grid-cols-[2fr_1fr_auto] lg:items-end">
+      <div className="grid items-end gap-4 rounded-2xl border bg-card p-5 sm:grid-cols-2 lg:grid-cols-[2fr_1fr_1fr_auto]">
         <div>
           <Label
             htmlFor="menu-search"
@@ -84,7 +88,44 @@ export default function BrowseMenu({ items }: { items: IMenuItem[] }) {
             </SelectContent>
           </Select>
         </div>
-        <Button variant="outline" className="h-11" onClick={resetFilters}>
+        <div>
+          <Label htmlFor="menu-sort" className="mb-2 block text-sm font-medium">
+            Sort by
+          </Label>
+          <Select
+            value={sort}
+            onValueChange={(value) => setSort(value ?? "default")}
+          >
+            <SelectTrigger
+              id="menu-sort"
+              className="w-full cursor-pointer bg-background data-[size=default]:h-11"
+            >
+              <SelectValue>
+                {sort === "price-asc"
+                  ? "Price: low to high"
+                  : sort === "price-desc"
+                    ? "Price: high to low"
+                    : "Newest first"}
+              </SelectValue>
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="default" className="cursor-pointer">
+                Newest first
+              </SelectItem>
+              <SelectItem value="price-asc" className="cursor-pointer">
+                Price: low to high
+              </SelectItem>
+              <SelectItem value="price-desc" className="cursor-pointer">
+                Price: high to low
+              </SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        <Button
+          variant="outline"
+          className="h-11 cursor-pointer"
+          onClick={resetFilters}
+        >
           Reset filters
         </Button>
       </div>
