@@ -26,10 +26,10 @@ import {
   DialogFooter,
   DialogClose,
 } from "@/components/ui/dialog"
-import { deleteMenuItem } from "@/app/lib/actions/menu-items";
-import { toast } from "@/components/ui/toast";
-import { useRouter } from "next/navigation";
-import HandleAvailability from "./HandleAvailability";
+import { deleteMenuItem } from "@/app/lib/actions/menu-items"
+import { toast } from "@/components/ui/toast"
+import { useRouter } from "next/navigation"
+import HandleAvailability from "./HandleAvailability"
 
 const statusStyles = {
   pending:
@@ -45,17 +45,29 @@ export default function MenuTable({ items }: { items: IMenuItem[] }) {
   const handleDeleteItem = async (id: string) => {
     if (!id) {
       toast.add({
-        title: "Item not found"
+        title: "Item not found",
+        description: "Refresh the menu and select the item again.",
+        type: "error",
       })
       return
     }
-    const result = await deleteMenuItem(id)
-    if (result.deletedCount > 0) {
+    try {
+      const result = await deleteMenuItem(id)
+      if (!(result.deletedCount > 0)) throw new Error("Item was not deleted")
+      if (result.deletedCount > 0) {
+        toast.add({
+          title: "Item deleted",
+          type: "success",
+          description: "Item Deleted Successfully",
+        })
+        router.refresh()
+      }
+    } catch {
       toast.add({
-        title: "Successfull",
-        description: "Item Deleted Successfully"
+        title: "Unable to delete item",
+        description: "The item could not be deleted. Please try again.",
+        type: "error",
       })
-      router.refresh()
     }
   }
 

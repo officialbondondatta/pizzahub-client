@@ -80,15 +80,28 @@ export default function UpdateMenuItemDialog({ item }: { item: IMenuItem }) {
       const result = await updateMenuItem(item._id, updatedItemDetails)
       if (result.modifiedCount > 0) {
         toast.add({
-          title: "Item Updated Successfully",
+          title: "Menu item updated",
+          description: "Your menu item changes have been saved.",
+          type: "success",
         })
+      }
+      if (!(result.modifiedCount > 0)) {
+        toast.add({
+          title: "No changes saved",
+          description:
+            result.message ||
+            "The item may already have these details. Refresh and try again if needed.",
+          type: "info",
+        })
+        return
       }
       setOpen(false)
       router.refresh()
     } catch (err) {
       toast.add({
-        title: err instanceof Error ? err.message : "Something went wrong",
-        description: "Can not update item data",
+        title: "Unable to update menu item",
+        description: err instanceof Error ? err.message : "Please try again.",
+        type: "error",
       })
     } finally {
       setUploading(false)

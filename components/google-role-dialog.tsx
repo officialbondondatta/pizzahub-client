@@ -1,5 +1,6 @@
 "use client"
 
+import { toast } from "@/components/ui/toast"
 import { useState } from "react"
 import { LoaderCircle, ShoppingBag, UserRound } from "lucide-react"
 import { authClient } from "@/app/lib/auth-client"
@@ -20,12 +21,20 @@ export function GoogleRoleDialog() {
   const [role, setRole] = useState<"customer" | "vendor">("customer")
   const [pending, setPending] = useState(false)
   const [error, setError] = useState("")
+  function showError(message: string) {
+    setError(message)
+    toast.add({
+      title: "Unable to continue with Google",
+      description: message,
+      type: "error",
+    })
+  }
   const [businessName, setBusinessName] = useState("")
 
   async function continueWithGoogle() {
     if (pending) return
     if (role === "vendor" && !businessName.trim()) {
-      setError("Business name is required for vendors.")
+      showError("Business name is required for vendors.")
       return
     }
     setPending(true)
@@ -40,14 +49,14 @@ export function GoogleRoleDialog() {
         },
       })
       if (result.error) {
-        setError(
+        showError(
           result.error.message || "Google sign-in failed. Please try again."
         )
         setPending(false)
       }
       // Keep the button disabled until navigation to Google completes.
     } catch {
-      setError("Unable to connect to Google. Please try again.")
+      showError("Unable to connect to Google. Please try again.")
       setPending(false)
     }
   }

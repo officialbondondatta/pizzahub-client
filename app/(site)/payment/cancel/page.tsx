@@ -1,9 +1,15 @@
+import PaymentToast from "@/app/components/subscription/PaymentToast"
 import Link from "next/link"
 import { ArrowLeft, ArrowRight, CreditCard, Pizza, X } from "lucide-react"
 
 export default function PaymentCancelPage() {
   return (
     <section className="flex min-h-[75svh] items-center justify-center bg-linear-to-b from-brand-100/60 to-background px-4 py-16 dark:from-brand-950/30">
+      <PaymentToast
+        success={false}
+        title="Payment cancelled"
+        message="Checkout was not completed. You can try again from your subscription page."
+      />
       <div className="w-full max-w-lg overflow-hidden rounded-3xl border bg-background shadow-xl shadow-brand-950/5">
         <div className="h-1.5 bg-linear-to-r from-brand-300 via-brand-500 to-brand-700" />
         <div className="p-6 text-center sm:p-10">

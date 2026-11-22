@@ -37,9 +37,12 @@ export const addMenuItems = async (data: IMenuItem) => {
   if (!res.ok) {
     throw new Error("Failed to add menu item")
   }
+  if (!res.ok)
+    throw new Error(
+      "The menu request could not be completed. Please try again."
+    )
   return res.json()
 }
-
 
 export const getActiveItemsCount = async () => {
   const session = await getSessionNow()
@@ -48,9 +51,10 @@ export const getActiveItemsCount = async () => {
   const vendorId = session.user.id
   const result = await fetch(`${BASEURL}/menu-items/active-items/${vendorId}`, {
     headers: {
-      authorization: `Bearer ${token}`
-    }
+      authorization: `Bearer ${token}`,
+    },
   })
+  if (!result.ok) throw new Error("Could not load the active item count")
   return result.json()
 }
 
@@ -97,14 +101,18 @@ export const updateMenuItem = async (id: string, data: Partial<IMenuItem>) => {
   const token = session.session.token
   const res = await fetch(`${BASEURL}/menu-items/${encodeURIComponent(id)}`, {
     method: "PATCH",
-    cache: 'no-cache',
+    cache: "no-cache",
     headers: {
       "Content-Type": "application/json",
-      authorization: `Bearer ${token}`
+      authorization: `Bearer ${token}`,
     },
-    body: JSON.stringify(data)
+    body: JSON.stringify(data),
   })
   if (!res.ok) throw new Error("Failed to update menu item")
+  if (!res.ok)
+    throw new Error(
+      "The menu request could not be completed. Please try again."
+    )
   return res.json()
 }
 
@@ -116,9 +124,13 @@ export const deleteMenuItem = async (id: string) => {
   const res = await fetch(`${BASEURL}/menu-items/${id}`, {
     method: "DELETE",
     headers: {
-      authorization: `Bearer ${token}`
-    }
+      authorization: `Bearer ${token}`,
+    },
   })
+  if (!res.ok)
+    throw new Error(
+      "The menu request could not be completed. Please try again."
+    )
   return res.json()
 }
 
@@ -135,11 +147,15 @@ export const changeAvailability = async (id: string, data: IAvailability) => {
     method: "PATCH",
     headers: {
       "Content-Type": "application/json",
-      authorization: `Bearer ${token}`
+      authorization: `Bearer ${token}`,
     },
     cache: "no-cache",
-    body: JSON.stringify(data)
+    body: JSON.stringify(data),
   })
+  if (!res.ok)
+    throw new Error(
+      "The menu request could not be completed. Please try again."
+    )
   return res.json()
 }
 
@@ -156,11 +172,14 @@ export const changeStatus = async (id: string, data: IStatus) => {
     method: "PATCH",
     headers: {
       "Content-Type": "application/json",
-      authorization: `Bearer ${token}`
+      authorization: `Bearer ${token}`,
     },
     cache: "no-cache",
-    body: JSON.stringify(data)
+    body: JSON.stringify(data),
   })
+  if (!res.ok)
+    throw new Error(
+      "The menu request could not be completed. Please try again."
+    )
   return res.json()
 }
-

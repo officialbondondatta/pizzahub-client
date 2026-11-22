@@ -65,50 +65,100 @@ export default function AdminMenuTable({
       .map((vendor) => [vendor._id, vendor])
   )
   const handleStatusChange = async (id: string, value: IStatus) => {
-    const result = await changeStatus(id, value)
-    if (result.modifiedCount > 0) {
+    try {
+      const result = await changeStatus(id, value)
+      if (!(result.modifiedCount > 0)) {
+        toast.add({
+          title: "Menu item not updated",
+          description:
+            result.message ||
+            "No changes were made. Refresh the menu and try again.",
+          type: "error",
+        })
+        return
+      }
+      if (result.modifiedCount > 0) {
+        toast.add({
+          title: `Item is ${value.status}`,
+          type: "success",
+          description: " Item status changed successfully",
+        })
+        router.refresh()
+      }
+    } catch {
       toast.add({
-        title: `Item is ${value.status}`,
-        description: " Item status changed successfully",
+        title: "Unable to change status",
+        description: "Please refresh the menu and try again.",
+        type: "error",
       })
-      router.refresh()
     }
   }
   const handleChangeAvailability = async (id: string, value: string) => {
-    let currentData = false
-    if (value === "Active") {
-      currentData = true
-    }
-    if (value === "Inactive") {
-      currentData = false
-    }
-    const updateData = {
-      isActive: currentData,
-    }
-    const result = await changeAvailability(id, updateData)
-    if (result.message) {
+    try {
+      let currentData = false
+      if (value === "Active") {
+        currentData = true
+      }
+      if (value === "Inactive") {
+        currentData = false
+      }
+      const updateData = {
+        isActive: currentData,
+      }
+      const result = await changeAvailability(id, updateData)
+      if (!(result.modifiedCount > 0)) {
+        toast.add({
+          title: "Menu item not updated",
+          description:
+            result.message ||
+            "No changes were made. Refresh the menu and try again.",
+          type: "error",
+        })
+        return
+      }
+      if (result.modifiedCount > 0) {
+        toast.add({
+          title: `Item is ${value} now !`,
+          type: "success",
+          description: " Item availability changed successfully",
+        })
+        router.refresh()
+      }
+    } catch {
       toast.add({
-        title: `Item availability can not be changed!`,
-        description: result.message,
+        title: "Unable to change availability",
+        description: "Please refresh the menu and try again.",
+        type: "error",
       })
-      router.refresh()
-    }
-    if (result.modifiedCount > 0) {
-      toast.add({
-        title: `Item is ${value} now !`,
-        description: " Item availability changed successfully",
-      })
-      router.refresh()
     }
   }
   const handleDeleteItem = async (id: string, item: IMenuItem) => {
-    const result = await deleteMenuItem(id)
-    if (result.deletedCount > 0) {
+    try {
+      const result = await deleteMenuItem(id)
+      if (!(result.deletedCount > 0)) {
+        toast.add({
+          title: "Menu item not updated",
+          description:
+            result.message ||
+            "No changes were made. Refresh the menu and try again.",
+          type: "error",
+        })
+        return
+      }
+      if (result.deletedCount > 0) {
+        toast.add({
+          title: `${item.name} is deleted`,
+          type: "success",
+          description: "Item deleted successfully",
+        })
+        router.refresh()
+      }
+    } catch {
       toast.add({
-        title: `${item.name} is deleted`,
-        description: "Item deleted successfully",
+        title: "Unable to delete item",
+        description: "Please refresh the menu and try again.",
+        type: "error",
       })
-      router.refresh()
     }
   }
 

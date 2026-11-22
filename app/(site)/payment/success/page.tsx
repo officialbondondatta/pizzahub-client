@@ -31,10 +31,14 @@ const PaymentSuccessPage = async ({
 
   let verification: { success: boolean; message: string } | null = null
   if (status === "complete" && payment_status === "paid") {
-    const result = await checkoutVerify(session_id)
-    verification = {
-      success: result.success === true,
-      message: typeof result.message === "string" ? result.message : "",
+    try {
+      const result = await checkoutVerify(session_id)
+      verification = {
+        success: result.success === true,
+        message: result.message || (result.success === true ? "Your Premium subscription is ready." : "We could not verify your subscription. Please try refreshing this page."),
+      }
+    } catch {
+      verification = { success: false, message: "Your payment was received, but we could not verify your subscription. Refresh this page to try again; you do not need to pay again." }
     }
   }
 

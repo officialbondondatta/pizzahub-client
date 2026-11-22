@@ -55,19 +55,30 @@ const Navbar = () => {
         ...(user ? [{ label: "Dashboard", href: dashboardHref }] : [])
     ]
 
-    const handleSignOut = async () => {
-        const { error } = await authClient.signOut()
-        if (!error) {
-            setIsOpen(false)
-            router.push("/")
-            router.refresh()
-        }
-        toast.add({
-            title: error ? "Sign-out failed" : "Sign-out successful",
-            description: error ? error.message : "You have successfully signed out.",
-            type: error ? "error" : "success",
-        })
+  const handleSignOut = async () => {
+    try {
+      const { error } = await authClient.signOut()
+      if (!error) {
+        setIsOpen(false)
+        router.push("/")
+        router.refresh()
+      }
+      toast.add({
+        title: error ? "Sign-out failed" : "Sign-out successful",
+        description: error
+          ? error.message || "Please try again."
+          : "You have successfully signed out.",
+        type: error ? "error" : "success",
+      })
+    } catch {
+      toast.add({
+        title: "Sign-out failed",
+        description:
+          "Unable to connect. Please check your connection and try again.",
+        type: "error",
+      })
     }
+  }
     useEffect(() => {
         if (!isOpen) return
 

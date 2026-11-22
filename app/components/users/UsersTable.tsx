@@ -34,8 +34,8 @@ import {
   TableCell,
   TableCaption,
 } from "@/components/ui/table"
-import { blockUser } from "@/app/lib/actions/users";
-import { useRouter } from "next/navigation";
+import { blockUser } from "@/app/lib/actions/users"
+import { useRouter } from "next/navigation"
 import { toast } from "@/components/ui/toast"
 
 export type TableUser = Pick<
@@ -66,17 +66,23 @@ export default function UsersTable({ users }: { users: TableUser[] }) {
     try {
       const result = await blockUser(id)
       toast.add({
-        title: result.message || (
+        title:
           result.modifiedCount > 0
             ? "User block status updated"
-            : "No changes made"
-        ),
+            : "User block status not changed",
+        description:
+          result.modifiedCount > 0
+            ? "The user's access status has been updated."
+            : result.message ||
+              "No changes were made. Refresh the user list and try again.",
+        type: result.modifiedCount > 0 ? "success" : "error",
       })
       router.refresh()
     } catch {
       toast.add({
         title: "Could not update user block status",
         description: "Please try again.",
+        type: "error",
       })
     }
   }
@@ -267,10 +273,7 @@ export default function UsersTable({ users }: { users: TableUser[] }) {
                               }
                             />
                           }
-                          onClick={() =>
-                            handleBlockUser(user?._id as string)
-
-                          }
+                          onClick={() => handleBlockUser(user?._id as string)}
                         >
                           {user.isBlocked ? "Unblock" : "Block"}
                         </DialogClose>

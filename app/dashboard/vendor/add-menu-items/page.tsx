@@ -6,10 +6,10 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import familyPizza from "@/app/assets/signin-family.png"
-import { useSession } from "@/app/lib/auth-client";
-import { toast } from "@/components/ui/toast";
-import { addMenuItems } from "@/app/lib/actions/menu-items";
-import { IMenuItem } from "@/app/Types/menu-items";
+import { useSession } from "@/app/lib/auth-client"
+import { toast } from "@/components/ui/toast"
+import { addMenuItems } from "@/app/lib/actions/menu-items"
+import { IMenuItem } from "@/app/Types/menu-items"
 
 type ItemStatus = "pending" | "accepted" | "rejected"
 const initialStatus: ItemStatus = "pending"
@@ -17,90 +17,96 @@ const inputClass = "h-11 rounded-xl bg-background"
 import { menuCategories as categories } from "@/app/lib/menu-categories"
 
 export default function AddMenuItems() {
-    const { data: session } = useSession()
-    const user = session?.user
-    const [uploading, setUplaoding] = useState(false)
-    const [imagePreview, setImagePreview] = useState<string | null>(null)
-    const [loading, setLoading] = useState(false)
-    useEffect(() => {
-        return () => {
-            if (imagePreview) URL.revokeObjectURL(imagePreview)
-        }
-    }, [imagePreview])
+  const { data: session } = useSession()
+  const user = session?.user
+  const [uploading, setUplaoding] = useState(false)
+  const [imagePreview, setImagePreview] = useState<string | null>(null)
+  const [loading, setLoading] = useState(false)
+  useEffect(() => {
+    return () => {
+      if (imagePreview) URL.revokeObjectURL(imagePreview)
+    }
+  }, [imagePreview])
 
-    const handleUploadToImgBB = async (file: File): Promise<string> => {
-        const formdata = new FormData()
-        formdata.append('image', file)
+  const handleUploadToImgBB = async (file: File): Promise<string> => {
+    const formdata = new FormData()
+    formdata.append("image", file)
 
-        const res = await fetch(`https://api.imgbb.com/1/upload?key=${process.env.NEXT_PUBLIC_IMGBB_API}`, {
-            method: 'POST',
-            body: formdata
+    const res = await fetch(
+      `https://api.imgbb.com/1/upload?key=${process.env.NEXT_PUBLIC_IMGBB_API}`,
+      {
+        method: "POST",
+        body: formdata,
+      }
+    )
+    const data = await res.json()
+    if (!res.ok || !data.success || !data.data?.url)
+      throw new Error("Image upload failed. Please try again.")
+    return data.data.url
+  }
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    setUplaoding(true)
+    setLoading(true)
+    if (!user) {
+      toast.add({
+        title: "You can not add items",
+        description: "Only vendors can add menu items",
+      })
+      setUplaoding(false)
+      setLoading(false)
+      return
+    }
+    try {
+      const form = event.currentTarget
+      const formData = new FormData(form)
+      const imageFile = formData.get("image")
+      if (!(imageFile instanceof File) || imageFile.size === 0) {
+        toast.add({
+          title: "Image not found",
+          description: "Upload a image of your menu item",
         })
-        const data = await res.json()
-        return data.data.url
-
+        setUplaoding(false)
+        return
+      }
+      const imageURL = await handleUploadToImgBB(imageFile)
+      const itemDetails: IMenuItem = {
+        name: String(formData.get("name") ?? ""),
+        category: String(formData.get("category") ?? ""),
+        description: String(formData.get("description") ?? ""),
+        location: String(formData.get("location") ?? ""),
+        price: Number(formData.get("price")),
+        status: initialStatus,
+        isActive: false,
+        vendorId: user.id,
+        image: imageURL,
+      }
+      const res = await addMenuItems(itemDetails)
+      if (!res.insertedId)
+        throw new Error("The menu item was not saved. Please try again.")
+      if (res.insertedId) {
+        setUplaoding(false)
+        setLoading(false)
+        form.reset()
+        setImagePreview(null)
+        toast.add({
+          title: "Item added successfully",
+          type: "success",
+          description: "Wait for admin approval",
+        })
+      }
+    } catch (err) {
+      toast.add({
+        title: "Unable to add menu item",
+        type: "error",
+        description:
+          err instanceof Error ? err.message : "Something went wrong",
+      })
+    } finally {
+      setLoading(false)
+      setUplaoding(false)
     }
-    async function handleSubmit(event: FormEvent<HTMLFormElement>) {
-        event.preventDefault()
-        setUplaoding(true)
-        setLoading(true)
-        if (!user) {
-            toast.add({
-                title: "You can not add items",
-                description: "Only vendors can add menu items"
-            })
-            setUplaoding(false)
-            return
-        }
-        try {
-            const form = event.currentTarget
-            const formData = new FormData(form)
-            const imageFile = formData.get('image')
-            if (!(imageFile instanceof File) || imageFile.size === 0) {
-                toast.add({
-                    title: "Image not found",
-                    description: "Upload a image of your menu item"
-                })
-                setUplaoding(false)
-                return
-            }
-            const imageURL = await handleUploadToImgBB(imageFile)
-            const itemDetails: IMenuItem = {
-                name: String(formData.get("name") ?? ""),
-                category: String(formData.get("category") ?? ""),
-                description: String(formData.get("description") ?? ""),
-                location: String(formData.get("location") ?? ""),
-                price: Number(formData.get("price")),
-                status: initialStatus,
-                isActive: false,
-                vendorId: user.id,
-                image: imageURL,
-            }
-            const res = await addMenuItems(itemDetails)
-            if (res.insertedId) {
-                setUplaoding(false)
-                setLoading(false)
-                form.reset()
-                setImagePreview(null)
-                toast.add({
-                    title: "Item added successfully",
-                    description: "Wait for admin approval"
-                })
-            }
-        }
-        catch (err) {
-            toast.add({
-                title: "Error",
-                description: err instanceof Error
-                    ? err.message
-                    : "Something went wrong",
-            });
-        }
-        finally {
-            setUplaoding(false)
-        }
-
-    }
+  }
 
     return (
         <div className="mx-auto max-w-6xl">

@@ -10,39 +10,49 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import pizzaImage from "@/app/assets/signin-family.png"
 import BrandLogo from "@/app/components/shared/BrandLogo"
-import { authClient } from "@/app/lib/auth-client";
-import { toast } from "@/components/ui/toast";
-import { useRouter } from "next/navigation";
+import { authClient } from "@/app/lib/auth-client"
+import { toast } from "@/components/ui/toast"
+import { useRouter } from "next/navigation"
 
 const inputClass =
-    "h-11 border-[#e6dbcf] bg-white placeholder:text-[#8b7e73] dark:bg-white"
+  "h-11 border-[#e6dbcf] bg-white placeholder:text-[#8b7e73] dark:bg-white"
 
 export default function SignInPage() {
-    const [showPassword, setShowPassword] = useState(false)
-    const router = useRouter()
-    async function handleSubmit(event: FormEvent<HTMLFormElement>) {
-        event.preventDefault()
-        const form = event.currentTarget
-        const formData = new FormData(form)
-        const signInData = Object.fromEntries(formData.entries())
-        const email = (signInData.email as string).trim()
-        const password = (signInData.password as string)
-        const { data, error } = await authClient.signIn.email({
-            email,
-            password,
-            callbackURL: "/",
-        });
-        if (data?.token) {
-            router.push("/")
-            form.reset()
-        }
-        toast.add({
-            title: error ? "Sign-in failed" : "Sign-in successful",
-            description: error ? error.message : "You have successfully signed in.",
-            type: error ? "error" : "success",
-        });
-
+  const [showPassword, setShowPassword] = useState(false)
+  const router = useRouter()
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    const form = event.currentTarget
+    const formData = new FormData(form)
+    const signInData = Object.fromEntries(formData.entries())
+    const email = (signInData.email as string).trim()
+    const password = signInData.password as string
+    try {
+      const { data, error } = await authClient.signIn.email({
+        email,
+        password,
+        callbackURL: "/",
+      })
+      if (data?.token) {
+        router.push("/")
+        form.reset()
+      }
+      toast.add({
+        title: error ? "Sign-in failed" : "Sign-in successful",
+        description: error
+          ? error.message || "Please try again."
+          : "You have successfully signed in.",
+        type: error ? "error" : "success",
+      })
+    } catch {
+      toast.add({
+        title: "Sign-in failed",
+        description:
+          "Unable to connect. Please check your connection and try again.",
+        type: "error",
+      })
     }
+  }
 
     return (
         <div className="grid min-h-svh bg-[#fff8ef] text-[#2b2521] lg:grid-cols-[42%_58%]">

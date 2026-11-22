@@ -17,6 +17,11 @@ export default function DashboardSignOut() {
     try {
       const { error } = await authClient.signOut()
       if (error) throw new Error(error.message || "Please try again.")
+      toast.add({
+        title: "Signed out",
+        description: "You have successfully signed out.",
+        type: "success",
+      })
       setOpenMobile(false)
       router.push("/")
       router.refresh()

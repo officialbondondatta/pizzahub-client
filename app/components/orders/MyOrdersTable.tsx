@@ -1,5 +1,6 @@
 "use client"
 
+import { toast } from "@/components/ui/toast"
 import Image from "next/image"
 import RequestDate from "./RequestDate"
 import { formatOrderDate as formatDate } from "@/app/lib/format-order-date"
@@ -27,8 +28,8 @@ import {
   DialogFooter,
   DialogClose,
 } from "@/components/ui/dialog"
-import { cancelOrder } from "@/app/lib/actions/order";
-import { useRouter } from "next/navigation";
+import { cancelOrder } from "@/app/lib/actions/order"
+import { useRouter } from "next/navigation"
 
 const statusStyles: Record<IOrder["status"], string> = {
   pending: "bg-amber-100 text-amber-900 dark:bg-amber-950 dark:text-amber-200",
@@ -38,12 +39,33 @@ const statusStyles: Record<IOrder["status"], string> = {
   cancelled: "bg-muted text-muted-foreground",
 }
 
-export default function MyOrdersTable({ orders, items }: { orders: IOrder[], items: IMenuItem[] }) {
+export default function MyOrdersTable({
+  orders,
+  items,
+}: {
+  orders: IOrder[]
+  items: IMenuItem[]
+}) {
   const router = useRouter()
   const handleOrderCancel = async (id: string) => {
-    const result = await cancelOrder(id)
-    console.log(result)
-    router.refresh()
+    try {
+      const result = await cancelOrder(id)
+      if (!(result.modifiedCount > 0))
+        throw new Error("Order was not cancelled")
+      toast.add({
+        title: "Order cancelled",
+        description: "Your order has been cancelled successfully.",
+        type: "success",
+      })
+      router.refresh()
+    } catch {
+      toast.add({
+        title: "Unable to cancel order",
+        description:
+          "Your order could not be cancelled. Refresh your orders and try again.",
+        type: "error",
+      })
+    }
   }
   return (
     <div
@@ -169,7 +191,7 @@ export default function MyOrdersTable({ orders, items }: { orders: IOrder[], ite
                               key={label}
                               className={
                                 label === "Delivery address" ||
-                                  label === "Special instructions"
+                                label === "Special instructions"
                                   ? "sm:col-span-2"
                                   : ""
                               }

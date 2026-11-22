@@ -15,8 +15,8 @@ import { authClient, useSession } from "@/app/lib/auth-client"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { toast } from "@/components/ui/toast";
-import SubscriptionPlan from "@/app/utils/SubscriptionPlan";
+import { toast } from "@/components/ui/toast"
+import SubscriptionPlan from "@/app/utils/SubscriptionPlan"
 
 function ProfileBackdrop({ children }: { children: ReactNode }) {
   return (
@@ -59,6 +59,14 @@ function ProfileForm({
   const [saving, setSaving] = useState(false)
   const [message, setMessage] = useState("")
   const [error, setError] = useState("")
+  function showError(message: string) {
+    setError(message)
+    toast.add({
+      title: "Unable to update profile",
+      description: message,
+      type: "error",
+    })
+  }
   const imageUrl = image.trim()
   const showImage = isImageUrl(imageUrl) && failedImage !== imageUrl
 
@@ -66,9 +74,9 @@ function ProfileForm({
     event.preventDefault()
     setMessage("")
     setError("")
-    if (!name.trim()) return setError("Please enter your name.")
+    if (!name.trim()) return showError("Please enter your name.")
     if (imageUrl && !isImageUrl(imageUrl))
-      return setError(
+      return showError(
         "Please enter an image link beginning with https:// or http://."
       )
     setSaving(true)
@@ -78,19 +86,20 @@ function ProfileForm({
         image: imageUrl || null,
       })
       if (result.error) {
-        setError(
+        showError(
           result.error.message ||
-          "Unable to save your profile. Please try again."
+            "Unable to save your profile. Please try again."
         )
       } else {
         toast.add({
           title: "Profile updated",
+          type: "success",
           description: "Your profile has been updated successfully.",
-        });
+        })
         setMessage("Your profile has been updated.")
       }
     } catch {
-      setError(
+      showError(
         "Unable to save your profile. Check your connection and try again."
       )
     } finally {
@@ -126,13 +135,11 @@ function ProfileForm({
           <h2 className="mt-1 truncate text-xl font-semibold">
             {name.trim() || "Your profile"}
           </h2>
-          <div className="flex gap-2 items-center text-center">
-
+          <div className="flex items-center gap-2 text-center">
             <span className="mt-2 inline-flex rounded-full border border-primary/30 bg-primary/20 px-3 py-1 text-xs font-medium capitalize">
               {user.role || "customer"}
             </span>
             <SubscriptionPlan plan={user.plan}></SubscriptionPlan>
-
           </div>
         </div>
       </div>
@@ -216,8 +223,8 @@ function ProfileForm({
             </p>
             {failedImage === imageUrl && imageUrl && (
               <p className="text-xs text-destructive" role="status">
-                We couldn&apos;t load this image. Check that the link is public and
-                points directly to an image.
+                We couldn&apos;t load this image. Check that the link is public
+                and points directly to an image.
               </p>
             )}
           </div>

@@ -10,66 +10,77 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import pizzaImage from "@/app/assets/signup-pizza.png"
 import BrandLogo from "@/app/components/shared/BrandLogo"
-import { authClient } from "@/app/lib/auth-client";
-import { toast } from "@/components/ui/toast";
-import { useRouter } from "next/navigation";
+import { authClient } from "@/app/lib/auth-client"
+import { toast } from "@/components/ui/toast"
+import { useRouter } from "next/navigation"
 import type { IUser } from "@/app/Types/user"
 
 const roles = [
-    {
-        value: "customer",
-        label: "Customer",
-        description: "Find your next favorite",
-        icon: UserRound,
-    },
-    {
-        value: "vendor",
-        label: "Vendor",
-        description: "Share your menu",
-        icon: ShoppingBag,
-    },
+  {
+    value: "customer",
+    label: "Customer",
+    description: "Find your next favorite",
+    icon: UserRound,
+  },
+  {
+    value: "vendor",
+    label: "Vendor",
+    description: "Share your menu",
+    icon: ShoppingBag,
+  },
 ] as const
 const inputClass =
-    "h-11 border-[#e6dbcf] bg-white placeholder:text-[#8b7e73] dark:bg-white"
+  "h-11 border-[#e6dbcf] bg-white placeholder:text-[#8b7e73] dark:bg-white"
 
 export default function SignUpPage() {
-    const [role, setRole] = useState<Exclude<IUser["role"], "admin">>("customer")
-    const [showPassword, setShowPassword] = useState(false)
-    const router = useRouter()
-    async function handleSubmit(event: FormEvent<HTMLFormElement>) {
-        event.preventDefault()
-        const form = event.currentTarget
-        const formData = new FormData(form)
+  const [role, setRole] = useState<Exclude<IUser["role"], "admin">>("customer")
+  const [showPassword, setShowPassword] = useState(false)
+  const router = useRouter()
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    const form = event.currentTarget
+    const formData = new FormData(form)
 
-        const signUpData: Omit<IUser, "_id" | "role"> & {
-            role: Exclude<IUser["role"], "admin">
-        } = {
-            name: formData.get("name") as string,
-            email: formData.get("email") as string,
-            password: formData.get("password") as string,
-            plan: "free",
-            isBlocked: false,
-            role: role === "vendor" ? "vendor" : "customer",
-            image: String(formData.get("image") ?? "").trim(),
-        }
-
-        const { data, error } = await authClient.signUp.email({
-            ...signUpData,
-            ...(role === "vendor"
-                ? { businessName: String(formData.get("businessName") ?? "").trim() }
-                : {}),
-            callbackURL: "/",
-        });
-        if (data?.token) {
-            router.push("/")
-            form.reset()
-        }
-        toast.add({
-            title: error ? "Sign-up failed" : "Sign-up successful",
-            description: error ? error.message : "Please check your email for verification.",
-            type: error ? "error" : "success",
-        });
+    const signUpData: Omit<IUser, "_id" | "role"> & {
+      role: Exclude<IUser["role"], "admin">
+    } = {
+      name: formData.get("name") as string,
+      email: formData.get("email") as string,
+      password: formData.get("password") as string,
+      plan: "free",
+      isBlocked: false,
+      role: role === "vendor" ? "vendor" : "customer",
+      image: String(formData.get("image") ?? "").trim(),
     }
+
+    try {
+      const { data, error } = await authClient.signUp.email({
+        ...signUpData,
+        ...(role === "vendor"
+          ? { businessName: String(formData.get("businessName") ?? "").trim() }
+          : {}),
+        callbackURL: "/",
+      })
+      if (data?.token) {
+        router.push("/")
+        form.reset()
+      }
+      toast.add({
+        title: error ? "Sign-up failed" : "Sign-up successful",
+        description: error
+          ? error.message || "Please try again."
+          : "Please check your email for verification.",
+        type: error ? "error" : "success",
+      })
+    } catch {
+      toast.add({
+        title: "Sign-up failed",
+        description:
+          "Unable to connect. Please check your connection and try again.",
+        type: "error",
+      })
+    }
+  }
 
     return (
         <div className="grid min-h-svh bg-[#fff8ef] text-[#2b2521] lg:grid-cols-[42%_58%]">

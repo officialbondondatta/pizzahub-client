@@ -6,8 +6,10 @@ import { toast } from "@/components/ui/toast"
 export default function PaymentToast({
   success,
   message,
+  title,
 }: {
   success: boolean
+  title?: string
   message: string
 }) {
   const shown = useRef(false)
@@ -17,11 +19,11 @@ export default function PaymentToast({
     shown.current = true
 
     toast.add({
-      title: success ? "Payment verified" : "Verification failed",
+      title: title || (success ? "Payment verified" : "Verification failed"),
       description: message,
       type: success ? "success" : "error",
     })
-  }, [success, message])
+  }, [success, message, title])
 
   return null
 }

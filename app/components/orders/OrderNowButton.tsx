@@ -10,54 +10,65 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import {
-    Dialog,
-    DialogTrigger,
-    DialogContent,
-    DialogHeader,
-    DialogTitle,
-    DialogDescription,
-    DialogFooter,
-    DialogClose,
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+  DialogClose,
 } from "@/components/ui/dialog"
 import { ShoppingBag } from "lucide-react"
 import { toast } from "@/components/ui/toast"
-import { createOrder } from "@/app/lib/actions/order";
+import { createOrder } from "@/app/lib/actions/order"
 
 export default function OrderNowButton({ item }: { item: IMenuItem }) {
-    const [open, setOpen] = useState(false)
-    const { data: session, isPending } = useSession()
-    const customer = session?.user
-    if (!customer) return null
-    async function handleSubmit(event: FormEvent<HTMLFormElement>) {
-        event.preventDefault()
-        const form = event.currentTarget
-        const formData = new FormData(form)
-        const address = String(formData.get("deliveryAddress") || "").trim()
+  const [open, setOpen] = useState(false)
+  const { data: session, isPending } = useSession()
+  const customer = session?.user
+  if (!customer) return null
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    const form = event.currentTarget
+    const formData = new FormData(form)
+    const address = String(formData.get("deliveryAddress") || "").trim()
 
-        const order: IOrder = {
-            customerId: customer?.id ?? "",
-            vendorId: item.vendorId,
-            menuItemId: item._id as string,
-            deliveryDate: String(formData.get("deliveryDate") || ""),
-            deliveryAddress: address,
-            additionalMessage: String(formData.get("additionalMessage") || "").trim(),
-            status: "pending",
-        }
-        const result = await createOrder(order)
-        if (result.message) {
-            toast.add({
-                title: result.message,
-                description: "Kindly try again after sometime"
-            })
-        }
-        if (result.insertedId) {
-            toast.add({
-                title: "Order Placed Successfully",
-                description: "Wait for vendor to accept your order"
-            })
-        }
-        setOpen(false)
+    const order: IOrder = {
+      customerId: customer?.id ?? "",
+      vendorId: item.vendorId,
+      menuItemId: item._id as string,
+      deliveryDate: String(formData.get("deliveryDate") || ""),
+      deliveryAddress: address,
+      additionalMessage: String(formData.get("additionalMessage") || "").trim(),
+      status: "pending",
     }
+    try {
+      const result = await createOrder(order)
+      if (!result.insertedId) {
+        toast.add({
+          title: "Unable to place order",
+          description:
+            result.message || "Please check your order details and try again.",
+          type: "error",
+        })
+        return
+      }
+      toast.add({
+        title: "Order placed",
+        description: "Your order is waiting for the vendor to accept it.",
+        type: "success",
+      })
+      setOpen(false)
+    } catch {
+      toast.add({
+        title: "Unable to place order",
+        description:
+          "Check your connection and try again. Your details have been kept.",
+        type: "error",
+      })
+    }
+  }
 
     return (
         <Dialog open={open} onOpenChange={setOpen}>

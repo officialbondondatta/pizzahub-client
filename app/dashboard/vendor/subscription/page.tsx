@@ -1,3 +1,4 @@
+import PaymentToast from "@/app/components/subscription/PaymentToast"
 import Image from "next/image"
 import { Check, Crown, Pizza, Sparkles } from "lucide-react"
 import UpgrateToPremiumButton from "@/app/components/subscription/UpgrateToPremiumButton"
@@ -28,17 +29,24 @@ const plans = [
   },
 ]
 type SubscriptionPageProps = {
-  searchParams: Promise<{ canceled?: string | string[] }>
+  searchParams: Promise<{ canceled?: string | string[]; checkout?: string }>
 }
 
 const SubscriptionPage = async ({ searchParams }: SubscriptionPageProps) => {
-  const { canceled } = await searchParams
+  const { canceled, checkout } = await searchParams
   if (canceled === "true") {
     redirect("/payment/cancel")
   }
 
   return (
     <div className="mx-auto max-w-6xl space-y-8">
+      {checkout === "failed" && (
+        <PaymentToast
+          success={false}
+          title="Unable to start checkout"
+          message="Payment checkout is unavailable. Please try again in a moment."
+        />
+      )}
       <header>
         <p className="mb-2 text-xs font-semibold tracking-[0.2em] text-brand-700 uppercase dark:text-brand-300">
           Made for your next chapter

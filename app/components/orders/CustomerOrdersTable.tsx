@@ -43,16 +43,26 @@ export default function CustomerOrdersTable({
     order: IOrder,
     status: "accepted" | "rejected"
   ) => {
-    const result = await changeOrderStatus(order._id as string, {
-      status: status,
-    })
-    console.log(result)
-    if (result.modifiedCount > 0) {
-      toast.add({
-        title: `Order ${status}`,
-        description: `Successful`,
+    try {
+      const result = await changeOrderStatus(order._id as string, {
+        status: status,
       })
-      router.refresh()
+      if (!(result.modifiedCount > 0)) throw new Error("Order was not updated")
+      if (result.modifiedCount > 0) {
+        toast.add({
+          title: `Order ${status}`,
+          description: `The customer order has been ${status}.`,
+          type: "success",
+        })
+        router.refresh()
+      }
+    } catch {
+      toast.add({
+        title: "Unable to update order",
+        description:
+          "The order status could not be changed. Refresh the page and try again.",
+        type: "error",
+      })
     }
   }
 
