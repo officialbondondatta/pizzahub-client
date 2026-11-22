@@ -55,6 +55,12 @@ export default function OrderNowButton({ item }: { item: IMenuItem }) {
                 description: "Kindly try again after sometime"
             })
         }
+        if (result.insertedId) {
+            toast.add({
+                title: "Order Placed Successfully",
+                description: "Wait for vendor to accept your order"
+            })
+        }
         setOpen(false)
     }
 
