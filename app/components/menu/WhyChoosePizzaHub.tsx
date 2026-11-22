@@ -81,7 +81,7 @@ export default function WhyChoosePizzaHub() {
           </div>
           <Link
             href="/browse-menu"
-            className="mt-9 inline-flex min-h-12 cursor-pointer items-center justify-center rounded-full bg-brand-700 px-7 py-3 font-semibold text-white transition-colors hover:bg-brand-800 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand-500"
+            className="mt-9 inline-flex min-h-12 cursor-pointer items-center justify-center rounded-full bg-brand-700 px-7 py-3 font-semibold text-white hover:bg-brand-800 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand-500"
           >
             Find your next favorite
           </Link>

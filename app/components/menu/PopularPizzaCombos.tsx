@@ -95,7 +95,7 @@ export default function PopularPizzaCombos() {
                   <li key={category}>
                     <Link
                       href={`/browse-menu?category=${encodeURIComponent(category)}`}
-                      className="flex min-h-11 cursor-pointer items-center rounded-xl border border-brand-200 px-4 py-2 text-sm font-medium text-brand-700 transition-colors hover:bg-brand-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-500 dark:border-brand-800 dark:text-brand-300 dark:hover:bg-brand-900"
+                      className="flex min-h-11 cursor-pointer items-center rounded-xl border border-brand-200 px-4 py-2 text-sm font-medium text-brand-700 hover:bg-brand-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-500 dark:border-brand-800 dark:text-brand-300 dark:hover:bg-brand-900"
                     >
                       {category}
                     </Link>

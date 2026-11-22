@@ -44,7 +44,7 @@ export default function PizzaCategories() {
               <Link
                 key={category}
                 href={`/browse-menu?category=${encodeURIComponent(category)}`}
-                className="group flex cursor-pointer items-start gap-4 rounded-2xl border border-brand-200 bg-card p-6 transition-colors hover:border-brand-500 hover:bg-brand-100 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand-500 dark:border-brand-800 dark:hover:bg-brand-900"
+                className="group flex cursor-pointer items-start gap-4 rounded-2xl border border-brand-200 bg-card p-6 hover:border-brand-500 hover:bg-brand-100 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand-500 dark:border-brand-800 dark:hover:bg-brand-900"
               >
                 <span className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-brand-500/10 text-brand-700 dark:text-brand-300">
                   <Icon className="size-6" aria-hidden="true" />

@@ -8,6 +8,7 @@ import HowPizzaHubWorks from "@/app/components/menu/HowPizzaHubWorks"
 import PizzaLoversTips from "@/app/components/menu/PizzaLoversTips"
 import PopularPizzaCombos from "@/app/components/menu/PopularPizzaCombos"
 import { Suspense } from "react"
+import SectionReveal from "@/app/components/shared/SectionReveal"
 
 export default function HomePage() {
   return (
@@ -47,7 +48,7 @@ export default function HomePage() {
             </p>
             <Link
               href="/browse-menu"
-              className="mt-8 inline-flex min-h-13 items-center justify-center gap-4 rounded-full bg-brand-300 px-7 py-3.5 text-sm font-bold text-brand-950 shadow-lg shadow-black/15 transition-colors hover:bg-brand-200 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand-200 motion-reduce:transition-none"
+              className="mt-8 inline-flex min-h-13 items-center justify-center gap-4 rounded-full bg-brand-300 px-7 py-3.5 text-sm font-bold text-brand-950 shadow-lg shadow-black/15 hover:bg-brand-200 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand-200"
             >
               Explore Pizza Menu
               <ArrowUpRight className="size-5" aria-hidden="true" />
@@ -65,13 +66,25 @@ export default function HomePage() {
           </p>
         }
       >
-        <FeaturedMenuItems />
+        <SectionReveal>
+          <FeaturedMenuItems />
+        </SectionReveal>
       </Suspense>
-      <PizzaCategories />
-      <WhyChoosePizzaHub />
-      <HowPizzaHubWorks />
-      <PizzaLoversTips />
-      <PopularPizzaCombos />
+      <SectionReveal direction="right">
+        <PizzaCategories />
+      </SectionReveal>
+      <SectionReveal>
+        <WhyChoosePizzaHub />
+      </SectionReveal>
+      <SectionReveal direction="right">
+        <HowPizzaHubWorks />
+      </SectionReveal>
+      <SectionReveal>
+        <PizzaLoversTips />
+      </SectionReveal>
+      <SectionReveal direction="right">
+        <PopularPizzaCombos />
+      </SectionReveal>
     </>
   )
 }
