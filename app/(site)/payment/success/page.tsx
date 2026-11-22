@@ -33,6 +33,7 @@ const PaymentSuccessPage = async ({
   if (status === "complete" && payment_status === "paid") {
     try {
       const result = await checkoutVerify(session_id)
+      console.log(result)
       verification = {
         success: result.success === true,
         message: result.message || (result.success === true ? "Your Premium subscription is ready." : "We could not verify your subscription. Please try refreshing this page."),

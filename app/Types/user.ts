@@ -9,5 +9,5 @@ export interface IUser {
   image?: string
   isBlocked: boolean
   businessName?: string
-  subscriptionExpiresAt?: string
+  subscriptionExpiresAt?: Date
 }
