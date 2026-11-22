@@ -1,6 +1,8 @@
 "use client"
 
 import Image from "next/image"
+import RequestDate from "./RequestDate"
+import { formatOrderDate } from "@/app/lib/format-order-date"
 import type { IUser } from "@/app/Types/user"
 import type { IOrder } from "@/app/Types/order"
 import type { IMenuItem } from "@/app/Types/menu-items"
@@ -55,13 +57,14 @@ export default function CustomerOrdersTable({
   }
 
   return (
-    <div className="overflow-hidden rounded-2xl border bg-card">
-      <Table>
+    <div className="min-w-0 overflow-hidden rounded-2xl border bg-card">
+      <Table className="min-w-320">
         <TableHeader className="bg-brand-700 [&_tr:hover]:bg-brand-700">
           <TableRow>
             {[
               "Customer",
               "Item",
+              "Request date",
               "Delivery date",
               "Delivery address",
               "Message",
@@ -80,7 +83,6 @@ export default function CustomerOrdersTable({
             const customer = customers.find(
               (user) => user._id === order.customerId
             )
-            const date = new Date(order.deliveryDate)
             return (
               <TableRow key={order._id || index}>
                 <TableCell className="max-w-72 min-w-56 px-5 py-4 whitespace-normal">
@@ -164,7 +166,7 @@ export default function CustomerOrdersTable({
                     )}
                   </Dialog>
                 </TableCell>
-                <TableCell className="px-5 py-4">
+                <TableCell className="w-72 min-w-64 px-5 py-4 whitespace-normal">
                   {item ? (
                     <button
                       type="button"
@@ -174,12 +176,12 @@ export default function CustomerOrdersTable({
                         )
                       }
                       aria-label={`View item details for ${item.name}`}
-                      className="max-w-64 cursor-pointer rounded-lg p-2 text-left whitespace-normal outline-none hover:bg-muted focus-visible:ring-2 focus-visible:ring-brand-500"
+                      className="flex w-full min-w-54 cursor-pointer flex-col gap-1.5 rounded-lg p-2 text-left whitespace-normal outline-none hover:bg-muted focus-visible:ring-2 focus-visible:ring-brand-500"
                     >
-                      <span className="block font-medium wrap-break-word text-brand-700 underline-offset-4 hover:underline dark:text-brand-300">
+                      <span className="block text-base leading-snug font-semibold wrap-break-word text-brand-700 underline-offset-4 hover:underline dark:text-brand-300">
                         {item.name}
                       </span>
-                      <span className="block text-xs text-muted-foreground">
+                      <span className="block text-sm leading-relaxed text-muted-foreground">
                         {item.category}
                       </span>
                     </button>
@@ -188,11 +190,10 @@ export default function CustomerOrdersTable({
                   )}
                 </TableCell>
                 <TableCell className="px-5 py-4">
-                  {Number.isNaN(date.getTime())
-                    ? "Not available"
-                    : date.toLocaleDateString("en-GB", {
-                        timeZone: "Asia/Dhaka",
-                      })}
+                  <RequestDate value={order.createdAt} />
+                </TableCell>
+                <TableCell className="px-5 py-4">
+                  {formatOrderDate(order.deliveryDate)}
                 </TableCell>
                 <TableCell className="max-w-56 min-w-40 px-5 py-4 wrap-break-word whitespace-pre-wrap">
                   {order.deliveryAddress}
@@ -229,7 +230,7 @@ export default function CustomerOrdersTable({
           {!orders.length && (
             <TableRow>
               <TableCell
-                colSpan={7}
+                colSpan={8}
                 className="py-14 text-center text-muted-foreground"
               >
                 No customer orders yet.

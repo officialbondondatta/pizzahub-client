@@ -1,6 +1,8 @@
 "use client"
 
 import Image from "next/image"
+import RequestDate from "./RequestDate"
+import { formatOrderDate as formatDate } from "@/app/lib/format-order-date"
 import { Eye, Package, X } from "lucide-react"
 import type { IOrder } from "@/app/Types/order"
 import type { IMenuItem } from "@/app/Types/menu-items"
@@ -34,17 +36,6 @@ const statusStyles: Record<IOrder["status"], string> = {
     "bg-emerald-100 text-emerald-900 dark:bg-emerald-950 dark:text-emerald-200",
   rejected: "bg-rose-100 text-rose-900 dark:bg-rose-950 dark:text-rose-200",
   cancelled: "bg-muted text-muted-foreground",
-}
-
-function formatDate(value?: string) {
-  if (!value) return "Not available"
-  const date = new Date(value)
-  return Number.isNaN(date.getTime())
-    ? "Not available"
-    : new Intl.DateTimeFormat("en-GB", {
-      dateStyle: "medium",
-      timeZone: "Asia/Dhaka",
-    }).format(date)
 }
 
 export default function MyOrdersTable({ orders, items }: { orders: IOrder[], items: IMenuItem[] }) {
@@ -130,7 +121,7 @@ export default function MyOrdersTable({ orders, items }: { orders: IOrder[], ite
                   </Badge>
                 </TableCell>
                 <TableCell className="px-5 py-4">
-                  {formatDate(order.createdAt)}
+                  <RequestDate value={order.createdAt} />
                 </TableCell>
                 <TableCell className="px-5 py-4">
                   <div className="flex gap-2">
@@ -167,7 +158,7 @@ export default function MyOrdersTable({ orders, items }: { orders: IOrder[], ite
                             ],
                             ["Order status", order.status],
                             ["Delivery date", formatDate(order.deliveryDate)],
-                            ["Request date", formatDate(order.createdAt)],
+                            ["Request date", formatDate(order.createdAt, true)],
                             ["Delivery address", order.deliveryAddress],
                             [
                               "Special instructions",

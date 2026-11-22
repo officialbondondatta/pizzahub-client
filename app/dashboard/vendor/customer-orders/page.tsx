@@ -5,6 +5,7 @@ import { requireRoleFromSession } from "@/app/lib/core/server"
 import type { IOrder } from "@/app/Types/order"
 import type { IUser } from "@/app/Types/user"
 import CustomerOrdersTable from "@/app/components/orders/CustomerOrdersTable"
+import { orderCreatedAt } from "@/app/lib/order-created-at"
 
 export default async function CustomerOrdersPage() {
   const session = await requireRoleFromSession("vendor")
@@ -13,9 +14,9 @@ export default async function CustomerOrdersPage() {
     getMenuItemsByID(),
   ])
   if (!Array.isArray(allOrders)) throw new Error("Could not load orders")
-  const orders = (allOrders as IOrder[]).filter(
-    (order) => order.vendorId === session.user.id
-  )
+  const orders = (allOrders as IOrder[])
+    .filter((order) => order.vendorId === session.user.id)
+    .sort((a, b) => orderCreatedAt(b) - orderCreatedAt(a))
   const users: IUser[] = await getUserInfo()
   if (!Array.isArray(users)) throw new Error("Could not load customers")
   const customers = users
