@@ -46,7 +46,7 @@ export default function OrderNowButton({ item }: { item: IMenuItem }) {
             deliveryDate: String(formData.get("deliveryDate") || ""),
             deliveryAddress: address,
             additionalMessage: String(formData.get("additionalMessage") || "").trim(),
-            status: "Pending",
+            status: "pending",
         }
         const result = await createOrder(order)
         if (result.message) {

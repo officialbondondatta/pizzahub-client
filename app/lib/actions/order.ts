@@ -16,3 +16,26 @@ export const createOrder = async (data: IOrder) => {
     })
     return result.json()
 }
+
+export const getMyOrders = async (id: string) => {
+    const token = await getTokenNow()
+    const result = await fetch(`${BASEURL}/order/${id}`, {
+        headers: {
+            authorization: `Bearer ${token}`
+        }
+    })
+    return result.json()
+}
+
+export const cancelOrder = async (id: string) => {
+    const token = await getTokenNow()
+    const result = await fetch(`${BASEURL}/order/cancel/${id}`, {
+        method: "PATCH",
+        headers: {
+            authorization: `Bearer ${token}`
+        },
+        cache: 'no-cache'
+
+    })
+    return result.json()
+}
