@@ -61,7 +61,10 @@ export default async function MenuItemDetailsPage({
               {item.description}
             </p>
           </div>
-          <VendorPlaceholder businessName={vendorItem.vendorBusinessName} />
+          <VendorPlaceholder
+            businessName={vendorItem.vendorBusinessName}
+            premium={vendorItem.vendorPlan === "premium"}
+          />
           <div className="mt-auto border-t pt-6">
             <OrderNowButton item={vendorItem}></OrderNowButton>
           </div>

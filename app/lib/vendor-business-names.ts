@@ -15,16 +15,23 @@ export async function withVendorBusinessNames(
   const vendors = await client
     .db("pizzahub")
     .collection("user")
-    .find({ _id: { $in: ids } }, { projection: { businessName: 1 } })
+    .find({ _id: { $in: ids } }, { projection: { businessName: 1, plan: 1 } })
     .toArray()
-  const names = new Map(
-    vendors.map((vendor) => [vendor._id.toString(), vendor.businessName])
+  const vendorsById = new Map(
+    vendors.map((vendor) => [vendor._id.toString(), vendor])
   )
-  return items.map((item) => ({
-    ...item,
-    vendorBusinessName:
-      typeof names.get(item.vendorId) === "string"
-        ? names.get(item.vendorId)
-        : undefined,
-  }))
+  return items.map((item) => {
+    const vendor = vendorsById.get(item.vendorId)
+    return {
+      ...item,
+      vendorBusinessName:
+        typeof vendor?.businessName === "string"
+          ? vendor.businessName
+          : undefined,
+      vendorPlan:
+        vendor?.plan === "premium" || vendor?.plan === "free"
+          ? vendor.plan
+          : undefined,
+    }
+  })
 }

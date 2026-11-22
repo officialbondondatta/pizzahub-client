@@ -10,6 +10,7 @@ export interface IMenuItem {
     image: string
     vendorId: string
     vendorBusinessName?: string
+    vendorPlan?: "free" | "premium"
     isActive: boolean
     status: "pending" | "accepted" | "rejected"
 }
