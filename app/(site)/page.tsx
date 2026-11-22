@@ -3,6 +3,7 @@ import Link from "next/link"
 import { ArrowUpRight } from "lucide-react"
 import FeaturedMenuItems from "@/app/components/menu/FeaturedMenuItems"
 import PizzaCategories from "@/app/components/menu/PizzaCategories"
+import WhyChoosePizzaHub from "@/app/components/menu/WhyChoosePizzaHub"
 import { Suspense } from "react"
 
 export default function HomePage() {
@@ -64,6 +65,7 @@ export default function HomePage() {
         <FeaturedMenuItems />
       </Suspense>
       <PizzaCategories />
+      <WhyChoosePizzaHub />
     </>
   )
 }
