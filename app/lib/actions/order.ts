@@ -49,3 +49,12 @@ export const getAllOrders = async () => {
     })
     return result.json()
 }
+export const getUserInfo = async () => {
+    const token = await getTokenNow()
+    const result = await fetch(`${BASEURL}/users/info`, {
+        headers: {
+            authorization: `Bearer ${token}`
+        }
+    })
+    return result.json()
+}

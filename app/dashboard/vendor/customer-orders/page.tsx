@@ -1,8 +1,9 @@
 import Image from "next/image"
-import { getAllOrders } from "@/app/lib/actions/order"
+import { getAllOrders, getUserInfo } from "@/app/lib/actions/order"
 import { getMenuItemsByID } from "@/app/lib/actions/menu-items"
 import { requireRoleFromSession } from "@/app/lib/core/server"
 import type { IOrder } from "@/app/Types/order"
+import type { IUser } from "@/app/Types/user"
 import CustomerOrdersTable from "@/app/components/orders/CustomerOrdersTable"
 
 export default async function CustomerOrdersPage() {
@@ -15,6 +16,11 @@ export default async function CustomerOrdersPage() {
   const orders = (allOrders as IOrder[]).filter(
     (order) => order.vendorId === session.user.id
   )
+  const users: IUser[] = await getUserInfo()
+  if (!Array.isArray(users)) throw new Error("Could not load customers")
+  const customers = users
+    .filter((user) => orders.some((order) => order.customerId === user._id))
+    .map(({ _id, name, email, image }) => ({ _id, name, email, image }))
 
   return (
     <div className="mx-auto max-w-7xl space-y-8">
@@ -43,7 +49,11 @@ export default async function CustomerOrdersPage() {
           className="h-full w-full object-cover"
         />
       </section>
-      <CustomerOrdersTable orders={orders} items={items} />
+      <CustomerOrdersTable
+        orders={orders}
+        items={items}
+        customers={customers}
+      />
     </div>
   )
 }

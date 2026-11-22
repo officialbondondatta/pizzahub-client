@@ -1,9 +1,20 @@
 "use client"
 
+import Image from "next/image"
+import type { IUser } from "@/app/Types/user"
 import type { IOrder } from "@/app/Types/order"
 import type { IMenuItem } from "@/app/Types/menu-items"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
+import {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog"
 import {
   Table,
   TableBody,
@@ -16,9 +27,11 @@ import {
 export default function CustomerOrdersTable({
   orders,
   items,
+  customers,
 }: {
   orders: IOrder[]
   items: IMenuItem[]
+  customers: Pick<IUser, "_id" | "name" | "email" | "image">[]
 }) {
   // Placeholder only: connect these actions to the API later.
   const handleOrderAction = (
@@ -51,12 +64,92 @@ export default function CustomerOrdersTable({
         <TableBody>
           {orders.map((order, index) => {
             const item = items.find((item) => item._id === order.menuItemId)
+            const customer = customers.find(
+              (user) => user._id === order.customerId
+            )
             const date = new Date(order.deliveryDate)
             return (
               <TableRow key={order._id || index}>
-                <TableCell className="max-w-48 px-5 py-4 break-all whitespace-normal">
-                  <p className="text-xs text-muted-foreground">Customer ID</p>
-                  {order.customerId}
+                <TableCell className="max-w-72 min-w-56 px-5 py-4 whitespace-normal">
+                  <Dialog>
+                    <DialogTrigger
+                      disabled={!customer}
+                      aria-label={`View customer information for ${customer?.name || "unavailable customer"}`}
+                      className="flex w-full cursor-pointer items-center gap-3 rounded-lg text-left outline-none hover:bg-muted focus-visible:ring-2 focus-visible:ring-brand-500 disabled:cursor-default"
+                    >
+                      {customer?.image ? (
+                        <Image
+                          src={customer.image}
+                          alt={customer.name}
+                          width={40}
+                          height={40}
+                          unoptimized
+                          className="size-10 shrink-0 rounded-full object-cover"
+                        />
+                      ) : (
+                        <span
+                          className="flex size-10 shrink-0 items-center justify-center rounded-full bg-brand-500/15 font-semibold text-brand-700 dark:text-brand-300"
+                          aria-hidden="true"
+                        >
+                          {customer?.name?.charAt(0).toUpperCase() || "?"}
+                        </span>
+                      )}
+                      <span className="min-w-0">
+                        <span className="block font-medium wrap-break-word">
+                          {customer?.name || "Customer unavailable"}
+                        </span>
+                        <span className="block text-xs break-all text-muted-foreground">
+                          {customer?.email || "Email unavailable"}
+                        </span>
+                      </span>
+                    </DialogTrigger>
+                    {customer && (
+                      <DialogContent>
+                        <DialogHeader>
+                          <DialogTitle>Customer information</DialogTitle>
+                          <DialogDescription>
+                            Contact details for this customer.
+                          </DialogDescription>
+                        </DialogHeader>
+                        {customer.image ? (
+                          <Image
+                            src={customer.image}
+                            alt={customer.name}
+                            width={96}
+                            height={96}
+                            unoptimized
+                            className="mx-auto size-24 rounded-full object-cover"
+                          />
+                        ) : (
+                          <span
+                            aria-hidden="true"
+                            className="mx-auto flex size-24 items-center justify-center rounded-full bg-brand-500/15 text-3xl font-semibold text-brand-700 dark:text-brand-300"
+                          >
+                            {customer.name?.charAt(0).toUpperCase() || "?"}
+                          </span>
+                        )}
+                        <dl className="space-y-4">
+                          <div>
+                            <dt className="text-xs text-muted-foreground">
+                              Name
+                            </dt>
+                            <dd className="mt-1 font-medium wrap-break-word">
+                              {customer.name || "Name unavailable"}
+                            </dd>
+                          </div>
+                          <div>
+                            <dt className="text-xs text-muted-foreground">
+                              Email
+                            </dt>
+                            <dd className="mt-1 break-all">
+                              {customer.email || "Email unavailable"}
+                            </dd>
+                          </div>
+                        </dl>
+                        <DialogFooter showCloseButton />
+                      </DialogContent>
+                    )}
+                  </Dialog>
                 </TableCell>
                 <TableCell className="px-5 py-4">
                   <p className="font-medium">
