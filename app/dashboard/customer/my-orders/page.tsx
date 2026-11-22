@@ -7,6 +7,15 @@ import type { IOrder } from "@/app/Types/order"
 import MyOrdersTable from "@/app/components/orders/MyOrdersTable"
 import { redirect } from "next/navigation"
 
+function orderCreatedAt(order: IOrder) {
+  const timestamp = Date.parse(order.createdAt || "")
+  if (Number.isFinite(timestamp)) return timestamp
+  // Older orders may only have MongoDB's creation timestamp in their ID.
+  return order._id && /^[a-f\d]{24}$/i.test(order._id)
+    ? parseInt(order._id.slice(0, 8), 16) * 1000
+    : 0
+}
+
 export default async function MyOrdersPage() {
   const session = await getSessionNow()
   if (!session) redirect("/sign-in")
@@ -15,6 +24,9 @@ export default async function MyOrdersPage() {
     getAllMenuItems(),
   ])
   if (!Array.isArray(orders)) throw new Error("Could not load orders")
+  const newestOrders = [...orders].sort(
+    (a, b) => orderCreatedAt(b) - orderCreatedAt(a)
+  )
   const items = await withVendorBusinessNames(
     menuItems.filter((item) =>
       orders.some((order) => order.menuItemId === item._id)
@@ -48,7 +60,7 @@ export default async function MyOrdersPage() {
           />
         </div>
       </section>
-      <MyOrdersTable orders={orders} items={items} />
+      <MyOrdersTable orders={newestOrders} items={items} />
     </div>
   )
 }
