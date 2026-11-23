@@ -6,6 +6,7 @@ import { ChevronDown, LayoutDashboard, LogOut, Menu, Moon, Sun, UserRound, X } f
 import { useEffect, useRef, useState } from "react"
 import { useTheme } from "next-themes"
 import { Button } from "@/components/ui/button"
+import { Skeleton } from "@/components/ui/skeleton"
 import {
     Collapsible,
     CollapsibleContent,
@@ -41,7 +42,7 @@ const Navbar = () => {
     const [failedAvatar, setFailedAvatar] = useState<string | null>(null)
     const headerRef = useRef<HTMLElement>(null)
     const toggleRef = useRef<HTMLButtonElement>(null)
-    const { data: session } = useSession()
+    const { data: session, isPending } = useSession()
     const user = session?.user
     const avatarUrl = user?.image?.trim()
     const role: string | null | undefined = user?.role
@@ -129,6 +130,12 @@ const Navbar = () => {
                 </NavigationMenuItem>
             )
         })
+
+    const renderAuthLoading = () => (
+        <div role="status" aria-label="Loading account">
+            <Skeleton className="h-11 w-14 rounded-xl motion-reduce:animate-none lg:w-40" />
+        </div>
+    )
 
     const renderAuth = () => (
         <>
@@ -239,13 +246,13 @@ const Navbar = () => {
                     </NavigationMenu>
                     <div className="hidden items-center justify-end gap-3 lg:flex">
                         {
-                            user ? afterLoginRenderAuth() : renderAuth()
+                            user ? afterLoginRenderAuth() : isPending ? renderAuthLoading() : renderAuth()
                         }
                         {themeToggle}
                     </div>
 
                     <div className="flex shrink-0 items-center gap-2 lg:hidden">
-                        {user && afterLoginRenderAuth()}
+                        {user ? afterLoginRenderAuth() : isPending ? renderAuthLoading() : null}
                         {themeToggle}
                         <CollapsibleTrigger
                             render={<Button variant="outline" size="icon" />}
@@ -277,7 +284,7 @@ const Navbar = () => {
                             {renderLinks(true)}
                         </NavigationMenuList>
                     </NavigationMenu>
-                    {!user && (
+                    {!user && !isPending && (
                         <div className="grid grid-cols-2 gap-3 border-t border-border pt-4">
                             {renderAuth()}
                         </div>
