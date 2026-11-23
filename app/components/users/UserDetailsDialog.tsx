@@ -61,7 +61,9 @@ export default function UserDetailsDialog({ user }: { user: TableUser }) {
     ["Business name", user.businessName || "Not provided"],
     ["Plan", getSubscriptionPlan(user)],
     ["Account status", user.isBlocked ? "Blocked" : "Active"],
-    ["Subscription expires", formatSubscriptionExpiry(user.subscriptionExpiresAt)],
+    ...(getSubscriptionPlan(user) === "premium" && user.subscriptionExpiresAt
+      ? [["Subscription expires", formatSubscriptionExpiry(user.subscriptionExpiresAt)]]
+      : []),
   ]
   return (
     <Dialog>

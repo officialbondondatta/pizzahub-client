@@ -57,7 +57,6 @@ function ProfileForm({
     plan: string
   }
 }) {
-  const [viewedAt] = useState(() => Date.now())
   const [name, setName] = useState(user.name)
   const [image, setImage] = useState(user.image || "")
   const [failedImage, setFailedImage] = useState<string | null>(null)
@@ -153,12 +152,12 @@ function ProfileForm({
           <section aria-labelledby="profile-subscription-heading" className="rounded-xl border border-primary/20 bg-primary/10 p-4">
             <h3 id="profile-subscription-heading" className="font-semibold">Your subscription</h3>
             <p className="mt-2 text-sm leading-relaxed">
-              {user.subscriptionExpiresAt && !Number.isNaN(new Date(user.subscriptionExpiresAt).getTime()) ? (
+              {getSubscriptionPlan(user) === "premium" && user.subscriptionExpiresAt ? (
                 <>
-                  Your Premium subscription {new Date(user.subscriptionExpiresAt).getTime() > viewedAt ? "will end on" : "ended on"}{" "}
+                  Your Premium subscription will end on{" "}
                   <strong>{formatSubscriptionExpiry(user.subscriptionExpiresAt)}</strong>.
                 </>
-              ) : user.plan === "premium" ? (
+              ) : getSubscriptionPlan(user) === "premium" ? (
                 "Your Premium subscription is active, but its end date has not been saved yet."
               ) : (
                 "You are on the Free plan. When you subscribe to Premium, your subscription will end 60 days after activation."

@@ -287,10 +287,12 @@ export default function AdminMenuTable({
                               </Badge>
                             </dd>
                           </div>
-                          <div>
-                            <dt className="text-muted-foreground">Subscription expires</dt>
-                            <dd className="mt-1">{formatSubscriptionExpiry(vendor.subscriptionExpiresAt)}</dd>
-                          </div>
+                          {getSubscriptionPlan(vendor) === "premium" && vendor.subscriptionExpiresAt && (
+                            <div>
+                              <dt className="text-muted-foreground">Subscription expires</dt>
+                              <dd className="mt-1">{formatSubscriptionExpiry(vendor.subscriptionExpiresAt)}</dd>
+                            </div>
+                          )}
                         </dl>
                         <DialogFooter showCloseButton />
                       </DialogContent>

@@ -54,7 +54,7 @@ const SubscriptionPage = async ({ searchParams }: SubscriptionPageProps) => {
       <section className="rounded-2xl border bg-card p-6">
         <h2 className="font-semibold">Current plan: {getSubscriptionPlan(user) === "premium" ? "Premium" : "Free"}</h2>
         <p className="mt-2 text-sm text-muted-foreground">Each Premium subscription lasts 60 days from activation.</p>
-        {user?.subscriptionExpiresAt && <p className="mt-2 text-sm">{getSubscriptionPlan(user) === "premium" ? "Expires" : "Expired"}: {formatSubscriptionExpiry(user.subscriptionExpiresAt)}</p>}
+        {getSubscriptionPlan(user) === "premium" && user?.subscriptionExpiresAt && <p className="mt-2 text-sm">Expires: {formatSubscriptionExpiry(user.subscriptionExpiresAt)}</p>}
       </section>
       <header>
         <p className="mb-2 text-xs font-semibold tracking-[0.2em] text-brand-700 uppercase dark:text-brand-300">
