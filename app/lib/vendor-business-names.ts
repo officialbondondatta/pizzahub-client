@@ -1,9 +1,8 @@
 import { getSubscriptionPlan } from "./subscription"
 import "server-only"
-import { MongoClient, ObjectId } from "mongodb"
+import { ObjectId } from "mongodb"
 import type { IMenuItem } from "@/app/Types/menu-items"
-
-const client = new MongoClient(process.env.MONGODB_URI as string)
+import { connectMongoDB } from "./mongodb"
 
 export async function withVendorBusinessNames(
   items: IMenuItem[]
@@ -13,8 +12,8 @@ export async function withVendorBusinessNames(
     .map((id) => new ObjectId(id))
   if (!ids.length) return items
 
-  const vendors = await client
-    .db("pizzahub")
+  const db = await connectMongoDB()
+  const vendors = await db
     .collection("user")
     .find({ _id: { $in: ids } }, { projection: { businessName: 1, plan: 1, subscriptionExpiresAt: 1 } })
     .toArray()

@@ -1,15 +1,19 @@
 import { betterAuth } from "better-auth";
-import { APIError, getOAuthState } from "better-auth/api";
-import { MongoClient } from "mongodb";
+import { APIError, createAuthMiddleware, getOAuthState } from "better-auth/api";
 import { mongodbAdapter } from "@better-auth/mongo-adapter";
+import { connectMongoDB, mongoClient } from "./mongodb";
 
-const client = new MongoClient(process.env.MONGODB_URI as string);
-const db = client.db("pizzahub");
+const db = mongoClient.db("pizzahub");
 
 export const auth = betterAuth({
     database: mongodbAdapter(db, {
-        client,
+        client: mongoClient,
     }),
+    hooks: {
+        before: createAuthMiddleware(async () => {
+            await connectMongoDB();
+        }),
+    },
     emailAndPassword: {
         enabled: true,
     },
