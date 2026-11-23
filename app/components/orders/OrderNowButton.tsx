@@ -38,7 +38,9 @@ export default function OrderNowButton({ item }: { item: IMenuItem }) {
     const address = String(formData.get("deliveryAddress") || "").trim()
 
     if (!address) {
-      toast.add({ title: "Enter a delivery address", type: "error" })
+      const addressField = form.elements.namedItem("deliveryAddress") as HTMLTextAreaElement
+      addressField.setCustomValidity("Enter a delivery address")
+      addressField.reportValidity()
       return
     }
     submitting.current = true
@@ -56,6 +58,7 @@ export default function OrderNowButton({ item }: { item: IMenuItem }) {
     try {
       const result = await createOrder(order)
       if (!result.insertedId) {
+        setOpen(false)
         setPaymentState("ready")
         toast.add({
           title: "Unable to place order",
@@ -72,11 +75,12 @@ export default function OrderNowButton({ item }: { item: IMenuItem }) {
       })
       setPaymentState("completed")
     } catch {
+      setOpen(false)
       setPaymentState("ready")
       toast.add({
         title: "Unable to place order",
         description:
-          "Check your connection and try again. Your details have been kept.",
+          "Check your connection, then open Order now and try again.",
         type: "error",
       })
     } finally {
