@@ -120,7 +120,7 @@ export default function CustomerOrdersTable({
                         </span>
                       )}
                       <span className="min-w-0">
-                        <span className="block font-medium wrap-break-word">
+                        <span className="block font-medium wrap-anywhere">
                           {customer?.name || "Customer unavailable"}
                         </span>
                         <span className="block text-xs break-all text-muted-foreground">
@@ -158,7 +158,7 @@ export default function CustomerOrdersTable({
                             <dt className="text-xs text-muted-foreground">
                               Name
                             </dt>
-                            <dd className="mt-1 font-medium wrap-break-word">
+                            <dd className="mt-1 font-medium wrap-anywhere">
                               {customer.name || "Name unavailable"}
                             </dd>
                           </div>
@@ -188,7 +188,7 @@ export default function CustomerOrdersTable({
                       aria-label={`View item details for ${item.name}`}
                       className="flex w-full min-w-54 cursor-pointer flex-col gap-1.5 rounded-lg p-2 text-left whitespace-normal outline-none hover:bg-muted focus-visible:ring-2 focus-visible:ring-brand-500"
                     >
-                      <span className="block text-base leading-snug font-semibold wrap-break-word text-brand-700 underline-offset-4 hover:underline dark:text-brand-300">
+                      <span className="block text-base leading-snug font-semibold wrap-anywhere text-brand-700 underline-offset-4 hover:underline dark:text-brand-300">
                         {item.name}
                       </span>
                       <span className="block text-sm leading-relaxed text-muted-foreground">
@@ -205,10 +205,10 @@ export default function CustomerOrdersTable({
                 <TableCell className="px-5 py-4">
                   {formatOrderDate(order.deliveryDate)}
                 </TableCell>
-                <TableCell className="max-w-56 min-w-40 px-5 py-4 wrap-break-word whitespace-pre-wrap">
+                <TableCell className="max-w-56 min-w-40 px-5 py-4 wrap-anywhere whitespace-pre-wrap">
                   {order.deliveryAddress}
                 </TableCell>
-                <TableCell className="max-w-56 min-w-36 px-5 py-4 wrap-break-word whitespace-pre-wrap">
+                <TableCell className="max-w-56 min-w-36 px-5 py-4 wrap-anywhere whitespace-pre-wrap">
                   {order.additionalMessage || "No message"}
                 </TableCell>
                 <TableCell className="px-5 py-4">

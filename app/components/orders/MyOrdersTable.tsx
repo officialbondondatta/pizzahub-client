@@ -107,7 +107,7 @@ export default function MyOrdersTable({
                 key={order._id || index}
                 className="border-brand-200/60 odd:bg-background even:bg-brand-100/40 hover:bg-brand-200/50 dark:border-brand-800/60 dark:even:bg-brand-900/20 dark:hover:bg-brand-800/30"
               >
-                <TableHead scope="row" className="px-5 py-4">
+                <TableHead scope="row" className="min-w-80 px-5 py-4">
                   <div className="flex items-center gap-3">
                     {item?.image ? (
                       <Image
@@ -123,18 +123,18 @@ export default function MyOrdersTable({
                         <Package aria-hidden="true" />
                       </span>
                     )}
-                    <span className="max-w-48 min-w-28 font-semibold wrap-break-word whitespace-normal">
+                    <span className="min-w-0 flex-1 font-semibold wrap-anywhere whitespace-normal">
                       {item?.name || "Item unavailable"}
                     </span>
                   </div>
                 </TableHead>
-                <TableCell className="max-w-44 px-5 py-4 wrap-break-word whitespace-normal">
+                <TableCell className="min-w-48 max-w-60 px-5 py-4 wrap-anywhere whitespace-normal">
                   {item?.vendorBusinessName || "Vendor unavailable"}
                 </TableCell>
                 <TableCell className="px-5 py-4">
                   {formatDate(order.deliveryDate)}
                 </TableCell>
-                <TableCell className="max-w-56 min-w-40 px-5 py-4 wrap-break-word whitespace-normal">
+                <TableCell className="max-w-56 min-w-40 px-5 py-4 wrap-anywhere whitespace-normal">
                   {order.deliveryAddress}
                 </TableCell>
                 <TableCell className="px-5 py-4">
@@ -199,7 +199,7 @@ export default function MyOrdersTable({
                               <dt className="text-xs text-muted-foreground">
                                 {label}
                               </dt>
-                              <dd className="mt-1 wrap-break-word whitespace-pre-wrap">
+                              <dd className="mt-1 wrap-anywhere whitespace-pre-wrap">
                                 {value}
                               </dd>
                             </div>
