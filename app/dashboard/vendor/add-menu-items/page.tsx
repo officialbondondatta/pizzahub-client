@@ -1,8 +1,9 @@
 "use client"
-import { useEffect, useState, type FormEvent } from "react"
+import { useEffect, useRef, useState, type FormEvent } from "react"
 import Image from "next/image"
 import { Clock3, LoaderIcon, Pizza } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import familyPizza from "@/app/assets/signin-family.png"
@@ -22,6 +23,7 @@ export default function AddMenuItems() {
   const [uploading, setUplaoding] = useState(false)
   const [imagePreview, setImagePreview] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
+  const submitting = useRef(false)
   useEffect(() => {
     return () => {
       if (imagePreview) URL.revokeObjectURL(imagePreview)
@@ -46,6 +48,8 @@ export default function AddMenuItems() {
   }
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
+    if (submitting.current) return
+    submitting.current = true
     setUplaoding(true)
     setLoading(true)
     if (!user) {
@@ -55,6 +59,7 @@ export default function AddMenuItems() {
       })
       setUplaoding(false)
       setLoading(false)
+      submitting.current = false
       return
     }
     try {
@@ -103,6 +108,7 @@ export default function AddMenuItems() {
           err instanceof Error ? err.message : "Something went wrong",
       })
     } finally {
+      submitting.current = false
       setLoading(false)
       setUplaoding(false)
     }
@@ -110,6 +116,17 @@ export default function AddMenuItems() {
 
     return (
         <div className="mx-auto max-w-6xl">
+            <Dialog open={loading}>
+                <DialogContent showCloseButton={false}>
+                    <div role="status" className="space-y-5 py-6 text-center">
+                        <LoaderIcon aria-hidden="true" className="mx-auto size-10 animate-spin motion-reduce:animate-none text-primary" />
+                        <DialogHeader>
+                            <DialogTitle>Uploading menu item</DialogTitle>
+                            <DialogDescription>Please wait while we upload your photo and save your menu item.</DialogDescription>
+                        </DialogHeader>
+                    </div>
+                </DialogContent>
+            </Dialog>
             <div className="mb-7">
                 <p className="mb-2 text-xs font-semibold tracking-[0.18em] text-muted-foreground uppercase">
                     Your kitchen · Your creations
@@ -290,6 +307,7 @@ export default function AddMenuItems() {
                     <div className="border-t pt-5">
                         <Button
                             type="submit"
+                            disabled={loading}
                             className="h-11 w-full rounded-xl bg-brand-700 px-6 text-white hover:bg-brand-800 sm:w-auto"
                         >
                             {loading ?

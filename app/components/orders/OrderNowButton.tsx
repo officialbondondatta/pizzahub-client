@@ -2,7 +2,7 @@
 
 import Image from "next/image"
 import type { IOrder } from "@/app/Types/order"
-import { useState, type FormEvent } from "react"
+import { useRef, useState, type FormEvent } from "react"
 import type { IMenuItem } from "@/app/Types/menu-items"
 import { useSession } from "@/app/lib/auth-client"
 import { Button } from "@/components/ui/button"
@@ -19,20 +19,30 @@ import {
   DialogFooter,
   DialogClose,
 } from "@/components/ui/dialog"
-import { ShoppingBag } from "lucide-react"
+import { CheckCircle2, LoaderCircle, ShoppingBag } from "lucide-react"
 import { toast } from "@/components/ui/toast"
 import { createOrder } from "@/app/lib/actions/order"
 
 export default function OrderNowButton({ item }: { item: IMenuItem }) {
   const [open, setOpen] = useState(false)
+  const [paymentState, setPaymentState] = useState<"ready" | "processing" | "completed">("ready")
+  const submitting = useRef(false)
   const { data: session, isPending } = useSession()
   const customer = session?.user
   if (!customer) return null
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
+    if (submitting.current || paymentState !== "ready") return
     const form = event.currentTarget
     const formData = new FormData(form)
     const address = String(formData.get("deliveryAddress") || "").trim()
+
+    if (!address) {
+      toast.add({ title: "Enter a delivery address", type: "error" })
+      return
+    }
+    submitting.current = true
+    setPaymentState("processing")
 
     const order: IOrder = {
       customerId: customer?.id ?? "",
@@ -46,6 +56,7 @@ export default function OrderNowButton({ item }: { item: IMenuItem }) {
     try {
       const result = await createOrder(order)
       if (!result.insertedId) {
+        setPaymentState("ready")
         toast.add({
           title: "Unable to place order",
           description:
@@ -59,30 +70,58 @@ export default function OrderNowButton({ item }: { item: IMenuItem }) {
         description: "Your order is waiting for the vendor to accept it.",
         type: "success",
       })
-      setOpen(false)
+      setPaymentState("completed")
     } catch {
+      setPaymentState("ready")
       toast.add({
         title: "Unable to place order",
         description:
           "Check your connection and try again. Your details have been kept.",
         type: "error",
       })
+    } finally {
+      submitting.current = false
     }
   }
 
     return (
-        <Dialog open={open} onOpenChange={setOpen}>
+        <Dialog open={open} onOpenChange={(nextOpen) => {
+            if (submitting.current) return
+            setOpen(nextOpen)
+            if (nextOpen) setPaymentState("ready")
+        }}>
             <DialogTrigger
                 render={<Button className="h-12 w-full" disabled={isPending} />}
             >
                 <ShoppingBag aria-hidden="true" />
                 Order now
             </DialogTrigger>
-            <DialogContent className="max-h-[85dvh] overflow-y-auto sm:max-w-lg">
+            <DialogContent showCloseButton={paymentState !== "processing"} className="max-h-[85dvh] overflow-y-auto sm:max-w-lg">
+                {paymentState === "processing" ? (
+                    <div role="status" className="space-y-5 py-8 text-center">
+                        <LoaderCircle aria-hidden="true" className="mx-auto size-10 animate-spin motion-reduce:animate-none text-primary" />
+                        <DialogHeader>
+                            <DialogTitle>Processing payment</DialogTitle>
+                            <DialogDescription>Saving your order. This is a demo payment; no money is charged.</DialogDescription>
+                        </DialogHeader>
+                    </div>
+                ) : paymentState === "completed" ? (
+                    <>
+                        <CheckCircle2 aria-hidden="true" className="mx-auto mt-4 size-12 text-primary" />
+                        <DialogHeader className="text-center">
+                            <DialogTitle>Payment completed</DialogTitle>
+                            <DialogDescription>Your order has been placed and is waiting for the vendor to accept it. This was a demo payment; no money was charged.</DialogDescription>
+                        </DialogHeader>
+                        <DialogFooter>
+                            <DialogClose render={<Button />}>Done</DialogClose>
+                        </DialogFooter>
+                    </>
+                ) : null}
+                <div hidden={paymentState !== "ready"} className="space-y-4">
                 <DialogHeader>
                     <DialogTitle>Order {item.name}</DialogTitle>
                     <DialogDescription>
-                        Choose a delivery date and tell us where to deliver your order.
+                        Choose your delivery details and confirm payment. Demo payment only — no money will be charged.
                     </DialogDescription>
                 </DialogHeader>
                 <Image
@@ -106,6 +145,10 @@ export default function OrderNowButton({ item }: { item: IMenuItem }) {
                         <span className="text-muted-foreground">Selected item: </span>
                         {item.name}
                     </p>
+                </div>
+                <div className="flex items-center justify-between rounded-xl border p-4 font-semibold">
+                    <span>Total to pay</span>
+                    <span>৳{item.price.toLocaleString("en-BD")}</span>
                 </div>
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <div className="space-y-2">
@@ -150,9 +193,10 @@ export default function OrderNowButton({ item }: { item: IMenuItem }) {
                         <DialogClose render={<Button variant="outline" type="button" />}>
                             Cancel
                         </DialogClose>
-                        <Button type="submit">Submit order</Button>
+                        <Button type="submit" disabled={paymentState !== "ready"}>Pay ৳{item.price.toLocaleString("en-BD")}</Button>
                     </DialogFooter>
                 </form>
+                </div>
             </DialogContent>
         </Dialog>
     )
