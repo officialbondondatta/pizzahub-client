@@ -107,8 +107,8 @@ export default function MyOrdersTable({
                 key={order._id || index}
                 className="border-brand-200/60 odd:bg-background even:bg-brand-100/40 hover:bg-brand-200/50 dark:border-brand-800/60 dark:even:bg-brand-900/20 dark:hover:bg-brand-800/30"
               >
-                <TableHead scope="row" className="px-5 py-4">
-                  <div className="flex items-center gap-3">
+                <TableHead scope="row" className="min-w-74 px-5 py-4">
+                  <div className="flex w-64 items-center gap-3">
                     {item?.image ? (
                       <Image
                         src={item.image}
@@ -123,13 +123,15 @@ export default function MyOrdersTable({
                         <Package aria-hidden="true" />
                       </span>
                     )}
-                    <span className="max-w-48 min-w-28 font-semibold wrap-break-word whitespace-normal">
+                    <span className="min-w-0 flex-1 font-semibold wrap-anywhere whitespace-normal">
                       {item?.name || "Item unavailable"}
                     </span>
                   </div>
                 </TableHead>
-                <TableCell className="max-w-44 px-5 py-4 wrap-break-word whitespace-normal">
-                  {item?.vendorBusinessName || "Vendor unavailable"}
+                <TableCell className="px-5 py-4 whitespace-normal">
+                  <span className="block w-36 wrap-anywhere">
+                    {item?.vendorBusinessName || "Vendor unavailable"}
+                  </span>
                 </TableCell>
                 <TableCell className="px-5 py-4">
                   {formatDate(order.deliveryDate)}

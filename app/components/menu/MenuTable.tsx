@@ -110,8 +110,8 @@ export default function MenuTable({ items }: { items: IMenuItem[] }) {
               key={item._id}
               className="border-brand-200/60 transition-colors odd:bg-background even:bg-brand-100/40 hover:bg-brand-200/50 dark:border-brand-800/60 dark:even:bg-brand-900/20 dark:hover:bg-brand-800/30"
             >
-              <TableHead scope="row" className="px-5 py-4">
-                <div className="flex items-center gap-3">
+              <TableHead scope="row" className="min-w-74 px-5 py-4">
+                <div className="flex w-64 items-center gap-3">
                   <Image
                     src={item.image}
                     alt=""
@@ -120,7 +120,7 @@ export default function MenuTable({ items }: { items: IMenuItem[] }) {
                     unoptimized
                     className="size-16 shrink-0 rounded-xl object-cover shadow-sm ring-2 ring-brand-300/60"
                   />
-                  <span className="max-w-60 min-w-32 text-base font-semibold wrap-break-word whitespace-normal">
+                  <span className="min-w-0 flex-1 text-base font-semibold wrap-anywhere whitespace-normal">
                     {item.name}
                   </span>
                 </div>
