@@ -201,7 +201,7 @@ export default function UsersTable({ users }: { users: TableUser[] }) {
                     {user.role}
                   </Badge>
                 </TableCell>
-                <TableCell className="max-w-48 px-5 py-4 wrap-anywhere whitespace-normal text-muted-foreground">
+                <TableCell className="max-w-48 px-5 py-4 wrap-break-word whitespace-normal text-muted-foreground">
                   {user.businessName || "—"}
                 </TableCell>
                 <TableCell className="px-5 py-4 capitalize">

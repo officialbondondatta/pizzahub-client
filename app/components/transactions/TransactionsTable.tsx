@@ -79,14 +79,14 @@ export default function TransactionsTable({
                 }
                 className="border-brand-200/60 odd:bg-background even:bg-brand-100/40 hover:bg-brand-200/50 dark:border-brand-800/60 dark:even:bg-brand-900/20 dark:hover:bg-brand-800/30"
               >
-                <TableHead scope="row" className="min-w-72 px-5 py-4">
+                <TableHead scope="row" className="px-5 py-4">
                   <div className="flex items-center gap-3">
                     <VendorAvatar name={vendor?.name} image={vendor?.image} />
-                    <div className="min-w-0 flex-1">
-                      <p className="font-semibold wrap-anywhere">
+                    <div>
+                      <p className="font-semibold">
                         {vendor?.name || "Unknown vendor"}
                       </p>
-                      <p className="mt-1 max-w-52 text-xs font-normal wrap-anywhere whitespace-normal text-muted-foreground">
+                      <p className="mt-1 max-w-52 text-xs font-normal wrap-break-word whitespace-normal text-muted-foreground">
                         Business: {vendor?.businessName || "Not provided"}
                       </p>
                       <p className="mt-1 max-w-52 text-xs font-normal break-all whitespace-normal text-muted-foreground">
@@ -141,10 +141,10 @@ export default function TransactionsTable({
                           large
                         />
                         <div className="min-w-0">
-                          <p className="font-semibold wrap-anywhere">
+                          <p className="font-semibold wrap-break-word">
                             {vendor?.name || "Unknown vendor"}
                           </p>
-                          <p className="mt-1 wrap-anywhere text-muted-foreground">
+                          <p className="mt-1 wrap-break-word text-muted-foreground">
                             Business: {vendor?.businessName || "Not provided"}
                           </p>
                           <p className="mt-1 break-all text-muted-foreground">

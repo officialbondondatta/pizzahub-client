@@ -210,7 +210,7 @@ export default function AdminMenuTable({
                 className="border-brand-200/60 transition-colors odd:bg-background even:bg-brand-100/40 hover:bg-brand-200/50 dark:border-brand-800/60 dark:even:bg-brand-900/20 dark:hover:bg-brand-800/30"
               >
                 <TableHead scope="row" className="min-w-82 px-5 py-4">
-                  <div className="flex min-w-0 items-center gap-3">
+                  <div className="flex w-72 items-center gap-3">
                     <Image
                       src={item.image}
                       alt=""
@@ -244,7 +244,7 @@ export default function AdminMenuTable({
                         }
                         aria-label={`View vendor details for ${businessName}`}
                       >
-                        <span className="font-semibold wrap-anywhere text-brand-700 underline-offset-4 hover:underline dark:text-brand-300">
+                        <span className="font-semibold wrap-break-word text-brand-700 underline-offset-4 hover:underline dark:text-brand-300">
                           {businessName}
                         </span>
                       </DialogTrigger>
@@ -265,7 +265,7 @@ export default function AdminMenuTable({
                         <dl className="grid gap-4 py-2 sm:grid-cols-2">
                           <div>
                             <dt className="text-muted-foreground">Name</dt>
-                            <dd className="mt-1 font-medium wrap-anywhere">
+                            <dd className="mt-1 font-medium wrap-break-word">
                               {vendor.name}
                             </dd>
                           </div>
@@ -273,7 +273,7 @@ export default function AdminMenuTable({
                             <dt className="text-muted-foreground">
                               Business name
                             </dt>
-                            <dd className="mt-1 font-medium wrap-anywhere">
+                            <dd className="mt-1 font-medium wrap-break-word">
                               {businessName}
                             </dd>
                           </div>
@@ -384,7 +384,7 @@ export default function AdminMenuTable({
                           unoptimized
                           className="h-56 w-full rounded-xl object-cover"
                         />
-                        <p className="wrap-anywhere whitespace-pre-wrap text-muted-foreground">
+                        <p className="wrap-break-word whitespace-pre-wrap text-muted-foreground">
                           {item.description}
                         </p>
                         <dl className="grid grid-cols-2 gap-4 text-sm">
@@ -407,7 +407,7 @@ export default function AdminMenuTable({
                           ].map(([label, value]) => (
                             <div key={label}>
                               <dt className="text-muted-foreground">{label}</dt>
-                              <dd className="mt-1 font-medium wrap-anywhere capitalize">
+                              <dd className="mt-1 font-medium wrap-break-word capitalize">
                                 {value}
                               </dd>
                             </div>
