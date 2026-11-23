@@ -2,17 +2,22 @@
 import { getSubscriptionPlan } from "@/app/lib/subscription"
 import { useSession } from '@/app/lib/auth-client';
 import { Button } from '@/components/ui/button';
+import { Skeleton } from '@/components/ui/skeleton';
 import { toast } from '@/components/ui/toast';
 
 
 const SwtichToFreeButton = () => {
-    const { data: session } = useSession()
+    const { data: session, isPending } = useSession()
     const userPlan = getSubscriptionPlan(session?.user)
     const handleSwitchingPlan = () => {
         toast.add({
             title: "Not available now",
             description: "Feature will be available soon"
         })
+    }
+
+    if (isPending && !session) {
+        return <Skeleton role="status" aria-label="Loading subscription" className="mt-8 h-10 w-36 rounded-xl" />
     }
 
     return (

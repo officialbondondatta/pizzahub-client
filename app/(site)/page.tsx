@@ -9,6 +9,7 @@ import PizzaLoversTips from "@/app/components/menu/PizzaLoversTips"
 import PopularPizzaCombos from "@/app/components/menu/PopularPizzaCombos"
 import { Suspense } from "react"
 import SectionReveal from "@/app/components/shared/SectionReveal"
+import { Skeleton } from "@/components/ui/skeleton"
 
 export default function HomePage() {
   return (
@@ -58,12 +59,23 @@ export default function HomePage() {
       </section>
       <Suspense
         fallback={
-          <p
+          <div
             role="status"
-            className="px-6 py-16 text-center text-muted-foreground"
+            aria-label="Loading featured menu items"
+            className="mx-auto max-w-7xl space-y-8 px-6 py-16 sm:py-20 lg:px-8"
           >
-            Loading featured menu items…
-          </p>
+            <Skeleton className="h-10 w-64 max-w-full" />
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {[1, 2, 3].map((item) => (
+                <div key={item} className="space-y-4 rounded-2xl border p-5">
+                  <Skeleton className="aspect-4/3 w-full" />
+                  <Skeleton className="h-6 w-2/3" />
+                  <Skeleton className="h-5 w-1/3" />
+                  <Skeleton className="h-11 w-full" />
+                </div>
+              ))}
+            </div>
+          </div>
         }
       >
         <SectionReveal>

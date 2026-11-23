@@ -9,7 +9,7 @@ const layout = ({ children }: { children: React.ReactNode }) => {
       <DashboardSidebar></DashboardSidebar>
       <div className="flex min-w-0 flex-1 flex-col">
         <DashboardNavbar />
-        <main className="lg:mx-auto mb-20 lg:max-w-6xl flex-1 p-2 sm:p-4 lg:p-3">
+        <main className="lg:mx-auto mb-20 w-full min-w-0 lg:max-w-6xl flex-1 p-2 sm:p-4 lg:p-3">
           {children}
         </main>
         <footer className="border-t px-4 py-5 text-center text-sm text-muted-foreground sm:px-6">

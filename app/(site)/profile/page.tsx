@@ -15,6 +15,7 @@ import {
 import { authClient, useSession } from "@/app/lib/auth-client"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { Skeleton } from "@/components/ui/skeleton"
 import { Label } from "@/components/ui/label"
 import { toast } from "@/components/ui/toast"
 import SubscriptionPlan from "@/app/utils/SubscriptionPlan"
@@ -328,13 +329,18 @@ export default function ProfilePage() {
             Your own little corner of the table.
           </p>
         </header>
-        {isPending ? (
+        {isPending && !user ? (
           <div
             role="status"
-            className="flex items-center justify-center gap-3 rounded-3xl bg-background/95 p-10"
+            aria-label="Loading your profile"
+            className="space-y-6 rounded-3xl bg-background/95 p-10"
           >
-            <LoaderCircle className="size-5 animate-spin" aria-hidden="true" />
-            Loading your profile…
+            <Skeleton className="mx-auto size-24 rounded-full" />
+            <Skeleton className="mx-auto h-6 w-40" />
+            {[1, 2, 3].map((field) => (
+              <Skeleton key={field} className="h-12 w-full" />
+            ))}
+            <Skeleton className="h-11 w-full" />
           </div>
         ) : user ? (
           <ProfileForm key={user.id} user={user} />

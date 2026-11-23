@@ -2,12 +2,16 @@
 import { getSubscriptionPlan } from "@/app/lib/subscription"
 import { useSession } from '@/app/lib/auth-client';
 import { Button } from '@/components/ui/button';
+import { Skeleton } from '@/components/ui/skeleton';
 import { ArrowUpRight } from 'lucide-react';
 
 
 const UpgrateToPremiumButton = () => {
-    const { data: session } = useSession()
+    const { data: session, isPending } = useSession()
     const userPlan = getSubscriptionPlan(session?.user)
+    if (isPending && !session) {
+        return <Skeleton role="status" aria-label="Loading subscription" className="mt-8 h-12 w-full rounded-xl" />
+    }
     return (
         <form action="/api/checkout_sessions" method="POST">
             <section>
