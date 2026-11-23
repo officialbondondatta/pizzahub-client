@@ -76,7 +76,7 @@ export default function UserDetailsDialog({ user }: { user: TableUser }) {
       >
         <UserPhoto user={user} />
         <span className="max-w-72 min-w-0">
-          <span className="block font-semibold wrap-anywhere text-brand-700 underline-offset-4 hover:underline dark:text-brand-300">
+          <span className="block font-semibold wrap-break-word text-brand-700 underline-offset-4 hover:underline dark:text-brand-300">
             {user.name}
           </span>
           <span className="mt-1 block text-xs font-normal break-all text-muted-foreground">

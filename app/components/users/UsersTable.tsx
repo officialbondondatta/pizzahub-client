@@ -190,7 +190,7 @@ export default function UsersTable({ users }: { users: TableUser[] }) {
                 key={user._id || user.email}
                 className="border-brand-200/60 odd:bg-background even:bg-brand-100/40 hover:bg-slate-100 dark:border-brand-800/60 dark:even:bg-brand-900/20 dark:hover:bg-brand-800/30"
               >
-                <TableHead scope="row" className="min-w-72 px-5 py-4">
+                <TableHead scope="row" className="px-5 py-4">
                   <UserDetailsDialog user={user} />
                 </TableHead>
                 <TableCell className="px-5 py-4">
